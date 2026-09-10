@@ -1,18 +1,33 @@
 ---
-title: "scratch-paper"
-format: html
+title: "Scratch Paper for Exam"
+format: 
+  html: 
+    toc: true
+    toc-location: left
+    toc-title: "Questions"
+    toc-depth: 2
 engine: knitr
 filters: 
   - webr
 ---
 
-**Scratch Paper for Exam**
-
 Use this as scratch paper for R calculations during the Exam.
 
 Each section corresponds to a question on the Exam. Enter and run your R code in the code box. Your results will appear below the box.
 
-Enter your final answer in Hawkes Learning in the exam. This page does *not* save or submit your work.
+Enter your final answer in Hawkes Learning in the exam. This page does ***not*** save or submit your work. Refreshing the page will reset the page and remove your work.
+
+```{webr-r}
+#| context: setup
+webr::install("dplyr")
+library(dplyr)
+
+webr::install("descr")
+library(descr::freq)
+
+webr::install("lsr")
+library(lsr)
+```
 
 ## Q1
 
