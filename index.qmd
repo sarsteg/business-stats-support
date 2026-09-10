@@ -224,7 +224,7 @@ freq <- function(x, w = NULL, useNA = "no", digits = 2) {
 
 ## Q22
 
-```{r}
+```{webr-r}
 
 ```
 
