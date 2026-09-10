@@ -12,6 +12,8 @@ filters:
   - webr
 ---
 
+v1.01
+
 Use this as scratch paper for R calculations during the Exam.
 
 Each section corresponds to a question on the Exam. Enter and run your R code in the code box. Your results will appear below the box.
