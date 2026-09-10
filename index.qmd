@@ -6,6 +6,7 @@ format:
     toc-location: left
     toc-title: "Questions"
     toc-depth: 2
+    css: styles.css
 engine: knitr
 filters: 
   - webr
@@ -17,16 +18,80 @@ Each section corresponds to a question on the Exam. Enter and run your R code in
 
 Enter your final answer in Hawkes Learning in the exam. This page does ***not*** save or submit your work. Refreshing the page will reset the page and remove your work.
 
+*Similar* functions available:
+
+-   janitor::round_half_up(value, digit): rounds numbers to specified digits using classic rounding technique
+
+-   descr::freq(vector): creates frequency table
+
 ```{webr-r}
 #| context: setup
-webr::install("dplyr")
-library(dplyr)
+# Helper functions
 
-webr::install("descr")
-library(descr::freq)
+# janitor::round_half_up() -----------------------------------------------------
+round_half_up <- function(x, digits = 0) {
+  multiplier <- 10^digits
+  
+  sign(x) * floor(abs(x) * multiplier + 0.5) / multiplier
+}
 
-webr::install("lsr")
-library(lsr)
+# descr:freq() -----------------------------------------------------
+freq <- function(x, w = NULL, useNA = "no", digits = 2) {
+  
+  # If no weights are supplied, use a weight of 1 for each observation
+  if (is.null(w)) {
+    w <- rep(1, length(x))
+  }
+  
+  # Basic checks
+  if (length(x) != length(w)) {
+    stop("x and w must have the same length.")
+  }
+  
+  if (!is.numeric(w)) {
+    stop("w must be numeric.")
+  }
+  
+  # Handle missing values
+  if (useNA == "no") {
+    keep <- !is.na(x) & !is.na(w)
+    x <- x[keep]
+    w <- w[keep]
+  }
+  
+  # Weighted frequencies
+  values <- unique(x)
+  
+  frequency <- sapply(values, function(v) {
+    sum(w[x == v], na.rm = TRUE)
+  })
+  
+  # Sort values in a sensible order
+  ord <- order(values)
+  values <- values[ord]
+  frequency <- frequency[ord]
+  
+  percent <- frequency / sum(frequency) * 100
+  
+  result <- data.frame(
+    Value = values,
+    Frequency = frequency,
+    Percent = round_half_up(percent, digits),
+    Cumulative_Frequency = cumsum(frequency),
+    Cumulative_Percent = round_half_up(cumsum(percent), digits),
+    row.names = NULL
+  )
+  
+  total <- data.frame(
+    Value = "Total",
+    Frequency = sum(frequency),
+    Percent = 100,
+    Cumulative_Frequency = NA,
+    Cumulative_Percent = NA
+  )
+  
+  rbind(result, total)
+}
 ```
 
 ## Q1
@@ -234,6 +299,20 @@ library(lsr)
 ```
 
 ## Q35
+
+```{webr-r}
+
+```
+
+## Extra Code Chunks
+
+```{webr-r}
+
+```
+
+```{webr-r}
+
+```
 
 ```{webr-r}
 
