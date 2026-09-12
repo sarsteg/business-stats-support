@@ -26,6 +26,8 @@ Enter your final answer in Hawkes Learning in the exam. This page does ***not***
 
 -   descr::freq(vector): creates frequency table
 
+-   mode(data): returns most frequent value(s)
+
 ```{webr-r}
 #| context: setup
 # Helper functions
@@ -93,6 +95,19 @@ freq <- function(x, w = NULL, useNA = "no", digits = 2) {
   )
   
   rbind(result, total)
+}
+
+mode <- function(x){
+  ta = table(x)
+  tam = max(ta)
+  if (all(ta == tam))
+    mod = NA
+  else
+    if(is.numeric(x))
+      mod = as.numeric(names(ta)[ta == tam])
+  else
+    mod = names(ta)[ta == tam]
+  return(mod)
 }
 ```
 

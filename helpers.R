@@ -8,6 +8,8 @@ round_half_up <- function(x, digits = 0) {
 
 
 # descr:freq() -----------------------------------------------------
+
+# Includes x and w
 freq <- function(x, w = NULL, useNA = "no", digits = 2) {
   
   # If no weights are supplied, use a weight of 1 for each observation
@@ -63,4 +65,51 @@ freq <- function(x, w = NULL, useNA = "no", digits = 2) {
   )
   
   rbind(result, total)
+}
+
+
+# ONLY inludes x
+freq <- function(x, useNA = "no", digits = 2) {
+  tab <- table(x, useNA = useNA)
+  
+  frequency <- as.vector(tab)
+  percent <- frequency / sum(frequency) * 100
+  
+  result <- data.frame(
+    Value = names(tab),
+    Frequency = frequency,
+    Percent = round_half_up(percent, digits),
+    Cumulative_Frequency = cumsum(frequency),
+    Cumulative_Percent = round_half_up(cumsum(percent), digits),
+    row.names = NULL
+  )
+  
+  total <- data.frame(
+    Value = "Total",
+    Frequency = sum(frequency),
+    Percent = 100,
+    Cumulative_Frequency = NA,
+    Cumulative_Percent = NA
+  )
+  
+  rbind(result, total)
+}
+
+
+
+
+
+# mode -------------------------------------------------------------------------
+# https://www.r-bloggers.com/2016/07/computing-the-mode-in-r/
+mode <- function(x){
+  ta = table(x)
+  tam = max(ta)
+  if (all(ta == tam))
+    mod = NA
+  else
+    if(is.numeric(x))
+      mod = as.numeric(names(ta)[ta == tam])
+  else
+    mod = names(ta)[ta == tam]
+  return(mod)
 }

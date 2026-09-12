@@ -1,0 +1,302 @@
+---
+title: "Exam 1 Formula Guide"
+format: 
+  html: 
+    toc: true
+    toc-location: left
+    toc-title: "Questions"
+    toc-depth: 2
+    css: styles.css
+engine: knitr
+filters: 
+  - webr
+---
+
+## Suggestions
+
+-   Classify the problem to determine which calculation or formula you need.
+
+-   Careful writing down the data! Watch out for [typos]{.underline}.\
+    Pasting tables into Excel might paste pictures (whomp whomp).
+
+-   Round to the specified number of digits [at the last calculation]{.underline}.
+
+-   Be [strategic]{.underline} with your available time.
+
+-   **YOU GOT THIS!**
+
+### Helpful Excel Formulas
+
+-   =TEXTJOIN(", ", TRUE, A1:A14)
+
+-   =SUM()
+
+-   Simple math ( + - / etc.)
+
+-   Lock a cell reference with \$ (e.g., \$A\$1)
+
+## Frequency Tables
+
+```{r}
+library(descr)
+```
+
+```{r}
+descr::freq(as.ordered(data$variable), plot = FALSE)
+```
+
+## Central Tendency
+
+#### Mode
+
+```{r}
+library(lsr)
+```
+
+```{r}
+lsr::modeOf(data$variable, na.rm = TRUE)
+```
+
+```{r}
+# Simple histogram
+x <- c(13,13,-5,-5,13,11,-5)
+hist(x, breaks = 10) # breaks = bins = classes
+```
+
+#### Median
+
+```{r}
+x <- c(13,13,-5,-5,13,11,-5)
+median(x)
+```
+
+```{r}
+median(data$variable, na.rm = TRUE)
+```
+
+#### Mean
+
+```{r}
+(56 + 31 + 56 + 8 + 32) / 5
+```
+
+```{r}
+x <- c(13,13,-5,-5,13,11,-5)
+sum(x) / length(x)
+```
+
+```{r}
+x <- c(56, 31, 56, 8, 32)
+mean(x, na.rm = TRUE)
+```
+
+#### Weighted Mean
+
+```{r}
+x <- c(24, 41, 58, 75, 92) # observations
+w <- c(2, 8, 15, 8, 11)  # weights
+
+sum(x * w) / sum(w)
+```
+
+```{r}
+x <- c(24, 41, 58, 75, 92) # observations
+w <- c(2, 8, 15, 8, 11)  # weights
+
+weighted.mean(x, w, na.rm = TRUE)
+```
+
+```{r}
+# variance, calculate after calculating the mean
+x <- c(24, 41, 58, 75, 92) # observations
+w <- c(2, 8, 15, 8, 11)  # weights
+
+n <- sum(w)
+
+xbar <- sum(x * w) / n
+s2   <- sum(w * (x - xbar)^2) / (n - 1)
+
+xbar
+s2
+```
+
+#### Trimmed Mean
+
+```{r}
+x <- c(0.32, 0.33, 0.36, 0.36, 0.39, 0.41, 0.49, 0.57, 0.6, 0.62, 0.63, 0.65, 0.65, 0.68, 0.72, 0.73, 0.76, 0.77, 0.78, 0.79)
+mean(x, trim = .2)
+```
+
+## Dispersion
+
+#### Range
+
+```{r}
+x <- c(30, 20, 10, 50, 100)
+
+max_mass <- max(x, na.rm = TRUE)
+min_mass <- min(x, na.rm = TRUE)
+
+max_mass
+min_mass
+```
+
+```{r}
+range(data$variable, na.rm = TRUE)
+```
+
+#### Variance
+
+```{r}
+x <- c(24, 41, 58, 75, 92)
+
+xbar <- mean(x)
+variance <- sum((x - xbar)^2) / (length(x) - 1)
+
+variance
+```
+
+#### MAD
+
+```{r}
+
+```
+
+#### Standard Deviation
+
+```{r}
+x <- c(600, 470, 170, 430, 300)
+
+xbar <- mean(x)
+variance <- sum((x - xbar)^2) / length(x)
+SD <- sqrt(variance)
+
+SD
+```
+
+## Relative Positioning
+
+#### z-scores
+
+```{r}
+score <- 46.9
+mu    <- 43.6
+SD    <- 4.7
+
+zscore <- (score - mu) / SD
+zscore
+```
+
+#### Percentiles
+
+```{r}
+summary(data)
+```
+
+```{r}
+x <- c(6.1, 9.1, 9.5, 6, 8.6, 6.2, 9.1, 6.1, 8, 5.7, 6.5, 6.4, 5.8, 9.3, 6.2
+)
+
+quantile(x, .28)
+```
+
+```{r}
+quantile(duration, c(.32, .57, .98))
+```
+
+#### Quartiles
+
+```{r}
+x <- c(10, 11, 13, 14, 14, 16, 17, 20, 25, 26, 26, 26, 27, 30, 33, 33, 33, 35, 38, 41, 41, 44, 44, 45, 45, 46)
+
+x <- sort(x)
+n <- length(x)
+
+if (n %% 2 == 0) {
+  lower <- x[1:(n/2)]
+  upper <- x[(n/2 + 1):n]
+} else {
+  lower <- x[1:((n - 1) / 2)]
+  upper <- x[((n + 3) / 2):n]
+}
+
+
+q1 <- median(lower)
+q2 <- median(x)
+q3 <- median(upper)
+
+n # use as double-check
+
+q1
+q2
+q3
+```
+
+```{r}
+quantile(x, c(
+  .25, # Q1
+  .50, # Median
+  .75  # Q3
+  ), type = 2)
+```
+
+#### IQR
+
+```{r}
+# See calculations of quartiles above or manually set
+q1 <- 205
+q3 <- 248
+
+IQR <- q3 - q1
+IQR
+```
+
+```{r}
+x <- c(51,8,3,35,7,18,23,7,9,52,39,2,23,32,43)
+IQR(x, type = 2)
+```
+
+```{r}
+IQR(data, type = 2)
+```
+
+## Two Variables
+
+#### Covariance
+
+```{r}
+x <- c(0.5, 1, 1.5, 2, 3, 3.5, 4, 4.5, 5.5, 6)
+y <- c(63,	66,	69,	72,	78,	81,	84,	87,	90,	96)
+
+# x
+xbar <- mean(x)
+xn   <- length(x)
+xSD  <- sqrt( (sum((x - xbar)^2)) / (length(x)-1) ) # sample is n - 1
+
+# y
+ybar <- mean(y)
+ySD  <- sqrt( (sum((y - ybar)^2)) / (length(y)-1) ) # sample is n - 1
+yn   <- length(y)
+
+# covariance
+covariance <- (sum((x - xbar)*(y - ybar)) / (length(x)-1) )
+
+covariance
+```
+
+```{r}
+# cov(x = data$x, y = data$y)
+```
+
+#### Correlation Coefficient
+
+```{r}
+# REQUIRED: Update the covariance section above AND run it ! 
+r <- covariance / (xSD * ySD)
+
+r
+```
+
+```{r}
+cor(x = data$x, y = data$y)
+```
