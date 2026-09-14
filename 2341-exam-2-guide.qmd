@@ -1,0 +1,265 @@
+---
+title: "Exam 2 Review"
+format: html
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+## Additional helpful functions
+
+-   `janitor::round_half_up(calculation, round)`
+
+-   `MASS::fractions(calculation)`
+
+| Problem                 | Phrase                          |
+|-------------------------|---------------------------------|
+| Sample space            | list all outcomes               |
+| Basic probability       | favorable / total               |
+| Mutually exclusive      | Check overlap                   |
+| Conditional probability | "given that..."                 |
+| Multiplication rule     | independent events              |
+| Dependent events        | without replacement             |
+| Combinations            | selecting groups                |
+| Complement rule         | "at least... "                  |
+| Expected value          | gains/losses with probabilities |
+| Binomial                | fixed trials, two outcomes      |
+| Poisson                 | count of events in an interval  |
+
+## Probability
+
+$$
+P(A) = \frac{\text{number of favorable outcomes}}{\text{total number of outcomes}}
+$$
+
+```{r}
+
+```
+
+### Unions (A or B)
+
+$$
+P(A \cup B) = P(A) + P(B) - P(A \cap B)
+$$
+
+```{r}
+
+```
+
+### Conditional Probability (A given B)
+
+$$
+P(A \mid B) = \frac{P(A \cap B)}{P(B)}
+$$
+
+```{r}
+
+```
+
+### Intersections (A and B)
+
+#### Independence
+
+$$
+P(A \cap B) = P (A\;and\;B) = P(A) \times P(B)
+$$
+
+```{r}
+
+```
+
+#### Dependent (Multiplication Rule)
+
+$$
+P(A \cap B) = P (A\;and\;B)= P(A) \times P(B \vert A)
+$$
+
+```{r}
+
+```
+
+### Complement
+
+$$
+P(A^c)= P (not\;A) = 1 - P(A)
+$$
+
+```{r}
+
+```
+
+## Discrete Random Variable
+
+#### Expected Value
+
+$$
+E(X) = \sum_{i} x_i \, P(X = x_i)
+$$
+
+```{r}
+
+```
+
+#### Variance and Standard Deviation
+
+$$
+\mathrm{Var}(X) = \sum_{i} (x_i - \mu)^2 \, P(X = x_i)\\\sigma = \sqrt{\mathrm{Var}(X)}
+$$
+
+```{r}
+
+```
+
+## Discrete Uniform Distribution
+
+$$
+ P(X = x) = \frac{1}{n}
+$$
+
+```{r}
+
+```
+
+#### Expected Value
+
+$$
+E(X) = \frac{\text{first value} + \text{last value}}{2}
+$$
+
+```{r}
+
+```
+
+## Binomial Distribution
+
+$$
+ P(X = x) = \binom{n}{x} p^x (1-p)^{n-x}
+$$
+
++----------------+-------------------+-------------------+
+| Wording        | Mathematical Form | R Function        |
++================+===================+===================+
+| exactly x      | $P(X=x)$          | `dbinom()`        |
++----------------+-------------------+-------------------+
+| at most x\     | $P(X\le x)$       | `pbinom()`        |
+| no more than x |                   |                   |
++----------------+-------------------+-------------------+
+| less than x    | $P(X \lt x)$      | `pbinom(x-1)`     |
++----------------+-------------------+-------------------+
+| more than x    | $P(X \gt x)$      | `1 - pbinom(x)`   |
++----------------+-------------------+-------------------+
+| at least x     | $P(X \ge x)$      | `1 - pbinom(x-1)` |
++----------------+-------------------+-------------------+
+
+| Argument | Equation | Meaning                             |
+|----------|----------|-------------------------------------|
+| `x`      | $x$      | number of successes                 |
+| `size`   | $n$      | number of trials                    |
+| `prob`   | $p$      | probabiity of success on each trial |
+
+```{r}
+
+```
+
+#### Expected Value
+
+$$
+E(X) = np
+$$
+
+```{r}
+
+```
+
+#### Variance and Standard Deviation
+
+$$
+Var(X) = np(1-p)\\SD(X) = \sqrt{np(1-p)}
+$$
+
+```{r}
+
+```
+
+## Poisson Distribution
+
+$$
+P(X = x) = \frac{e^{-\lambda}\lambda^x}{x!}, \quad x = 0,1,2,\ldots
+$$
+
++----------------+-------------------+------------------+
+| Wording        | Mathematical Form | R Function       |
++================+===================+==================+
+| exactly x      | $P(X=x)$          | `dpois()`        |
++----------------+-------------------+------------------+
+| at most x\     | $P(X\le x)$       | `ppois()`        |
+| no more than x |                   |                  |
++----------------+-------------------+------------------+
+| less than x    | $P(X \lt x)$      | `ppois(x-1)`     |
++----------------+-------------------+------------------+
+| more than x    | $P(X \gt x)$      | `1 - ppois(x)`   |
++----------------+-------------------+------------------+
+| at least x     | $P(X \ge x)$      | `1 - ppois(x-1)` |
++----------------+-------------------+------------------+
+
+| Argument | Equation  | Meaning |
+|----------|-----------|---------|
+| `x`      | $x$       | vector  |
+| `lambda` | $\lambda$ | lambda  |
+
+```{r}
+
+```
+
+## Hypergeometric Distribution
+
+$$
+P(X = x) = \frac{\binom{k}{x}\binom{N-k}{\,n-x\,}}{\binom{N}{n}}
+$$
+
++----------------+-------------------+-------------------+
+| Wording        | Mathematical Form | R Function        |
++================+===================+===================+
+| exactly x      | $P(X=x)$          | `dhyper()`        |
++----------------+-------------------+-------------------+
+| at most x\     | $P(X\le x)$       | `phyper()`        |
+| no more than x |                   |                   |
++----------------+-------------------+-------------------+
+| less than x    | $P(X \lt x)$      | `phyper(x-1)`     |
++----------------+-------------------+-------------------+
+| more than x    | $P(X \gt x)$      | `1 - phyper(x)`   |
++----------------+-------------------+-------------------+
+| at least x     | $P(X \ge x)$      | `1 - phyper(x-1)` |
++----------------+-------------------+-------------------+
+
+| Argument | Equation | Meaning                 |
+|----------|----------|-------------------------|
+| `x`      | $x$      | successes in sample     |
+| `m`      | $k$      | successes in population |
+| `n`      | $N-k$    | failures in population  |
+| `k`      | $n$      | sample size             |
+
+```{r}
+
+```
+
+#### Expected Value and Variance
+
+$$
+E(X) = n \cdot \frac{k}{N}
+$$
+
+```{r}
+
+```
+
+#### Variance
+
+$$
+\operatorname{Var}(X)=n \cdot \frac{k}{N}\left(1 - \frac{k}{N}\right)\frac{N - n}{N - 1}
+$$
+
+```{r}
+
+```

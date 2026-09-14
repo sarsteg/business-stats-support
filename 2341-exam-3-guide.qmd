@@ -1,0 +1,263 @@
+---
+title: "exam3"
+format: html
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+## Additional Helpful Functions
+
+-   `janitor::round_half_up(calculation, round)`
+
+-   `round(calculation, digits = round)`
+
+## Uniform Distribution
+
+### Identification
+
+Problem gives:
+
+-   the variable is uniformly distributed
+
+-   values lie between $a$ and $b$
+
+-   every value in the interval is equally likely
+
+### Key formulas
+
+Mean:
+
+$$
+\mu = \frac{a+b}{2}
+$$
+
+Standard deviation
+
+$$
+\sigma = \sqrt{\frac{(b-a)^2}{12}}
+$$
+
+Probability to the right of a cutoff:
+
+$$
+P(X > x) = \frac{b-x}{b-a}
+$$
+
+Probability to the left of a cutoff:
+
+$$
+P(X < x) = \frac{x-a}{b-a}
+$$
+
+### Example script
+
+```{r}
+# mean and standard deviation
+mu <- (a + b) / 2
+sigma <- sqrt((b - a)^2 / 12)
+
+# probability greater than x
+(b - x) / (b - a)
+
+# probability less than x
+(x - a) / (b - a)
+```
+
+## Normal distribution with a single raw score
+
+### Identification
+
+Problem gives:
+
+-   a mean and standard deviation
+
+-   says that the variable is normally distributed
+
+-   asks about a randomly selected observation
+
+-   uses $X$ rather than $\bar{x}$
+
+### Key formulas
+
+For a value between two numbers:
+
+$$
+P(a < X < b)
+$$
+
+Standardizing:
+
+$$
+P(a < X < b)
+$$
+
+For a value above a cutoff:
+
+$$
+P(X > x)
+$$
+
+For a value below a cutoff:
+
+$$
+P(X < x)
+$$
+
+For finding a cutoff from a percentile:
+
+$$
+P(X \le x) = p
+$$
+
+For solving for standard deviation:
+
+$$
+z = \frac{x - \mu}{\sigma}\qquad \Rightarrow \qquad\sigma = \frac{x - \mu}{z}
+$$
+
+### Example script 
+
+```{r}
+# between two values
+pnorm(upper, mean = mu, sd = sigma) - 
+  pnorm(lower, mean = mu, sd = sigma)
+
+# greater than
+1 - pnorm(x, mean = mu, sd = sigma)
+
+# less than
+pnorm(x, mean = mu, sd = sigma)
+
+# cutoff from a percentile
+qnorm(p, mean = mu, sd = sigma)
+
+# solve for sigma
+z <- qnorm(p_left)
+sigma <- (x - mu) / z
+```
+
+## Graphs of Normal Distributions
+
+### Identification
+
+Conceptual problems comparing:
+
+-   centers of the curves
+
+-   width/spread of the curves
+
+-   whether means are the same or different
+
+-   whether standard deviations are the same or different
+
+### Key ideas
+
+$$
+\text{Different centers} \Rightarrow \text{different means}\\
+\text{Wider/flatter curve} \Rightarrow \text{larger standard deviation}\\
+\text{Narrower/taller curve} \Rightarrow \text{smaller standard deviation}
+$$
+
+## Empirical Rule
+
+### Identification
+
+Problem shows:
+
+-   a normal curve
+
+-   shaded regions
+
+-   labels involving 𝜇, 𝜇 + 𝜎, 𝜇 + 2𝜎, 𝜇 + 3𝜎
+
+### Key ideas
+
+$$
+68\% \text{ is within } \mu \pm \sigma\\
+95\% \text{ is within } \mu \pm 2\sigma\\
+99.7\% \text{ is within } \mu \pm 3\sigma
+$$
+
+### Supporting Script
+
+```{r}
+curve(dnorm(x), from = -4, to = 4)
+abline(v = c(0, 1, 2, 3), lty = 2)
+```
+
+## Sampling distribution of the mean $\bar{X}$
+
+### Identification
+
+Problem gives:
+
+-   “sample mean”
+
+-   “a random sample of $n$”
+
+-   “what is the probability that the sample mean...”
+
+-   “sampling distribution”
+
+### Key formulas
+
+Mean of the sampling distribution:
+
+$$
+\mu_{\bar{X}} = \mu
+$$
+
+Standard deviation of the sampling distribution, also called the standard error:
+
+$$
+\sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}}
+$$
+
+If variance is given first:
+
+$$
+\sigma = \sqrt{\text{variance}}\\
+\sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}}
+$$
+
+Probability forms:
+
+$$
+P(\bar{X} < x)\\
+P(\bar{X} > x)\\
+P\bigl(|\bar{X} - \mu| < a\bigr)\\
+P\bigl(|\bar{X} - \mu| > a\bigr)
+$$
+
+Expanded interval forms:
+
+$$
+P(\mu - a < \bar{X} < \mu + a)\\
+P(\bar{X} < \mu - a) + P(\bar{X} > \mu + a)
+$$
+
+### Example script
+
+```{r}
+# if variance is given
+sigma <- sqrt(variance)
+
+# standard error
+se <- sigma / sqrt(n)
+
+# less than
+pnorm(xbar, mean = mu, sd = se)
+
+# greater than
+1 - pnorm(xbar, mean = mu, sd = se)
+
+# within a distance of mu
+pnorm(mu + amount, mean = mu, sd = se) -
+  pnorm(mu - amount, mean = mu, sd = se)
+
+# greater than a distance from mu
+1 - (pnorm(mu + amount, mean = mu, sd = se) -
+       pnorm(mu - amount, mean = mu, sd = se))
+```

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Business Statistics Support – Business Statistics Resources</title>
+<title>Exam 2 Review – Business Statistics Resources</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -67,6 +67,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -88,7 +117,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
@@ -112,7 +141,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Business Statistics Support</h1>
+<h1 class="title">Exam 2 Review</h1>
 </div>
 
 
@@ -129,25 +158,377 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="scratch-paper" class="level2">
-<h2 class="anchored" data-anchor-id="scratch-paper">Scratch Paper</h2>
-<p>Use the R Scratch Paper during exams when instructed.</p>
-<p><a href="./scratch-paper.html" class="btn btn-success btn-lg"><strong>Open R Scratch Paper</strong></a></p>
+<section id="additional-helpful-functions" class="level2">
+<h2 class="anchored" data-anchor-id="additional-helpful-functions">Additional helpful functions</h2>
+<ul>
+<li><p><code>janitor::round_half_up(calculation, round)</code></p></li>
+<li><p><code>MASS::fractions(calculation)</code></p></li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Problem</th>
+<th>Phrase</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sample space</td>
+<td>list all outcomes</td>
+</tr>
+<tr class="even">
+<td>Basic probability</td>
+<td>favorable / total</td>
+</tr>
+<tr class="odd">
+<td>Mutually exclusive</td>
+<td>Check overlap</td>
+</tr>
+<tr class="even">
+<td>Conditional probability</td>
+<td>“given that…”</td>
+</tr>
+<tr class="odd">
+<td>Multiplication rule</td>
+<td>independent events</td>
+</tr>
+<tr class="even">
+<td>Dependent events</td>
+<td>without replacement</td>
+</tr>
+<tr class="odd">
+<td>Combinations</td>
+<td>selecting groups</td>
+</tr>
+<tr class="even">
+<td>Complement rule</td>
+<td>“at least…”</td>
+</tr>
+<tr class="odd">
+<td>Expected value</td>
+<td>gains/losses with probabilities</td>
+</tr>
+<tr class="even">
+<td>Binomial</td>
+<td>fixed trials, two outcomes</td>
+</tr>
+<tr class="odd">
+<td>Poisson</td>
+<td>count of events in an interval</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="study-guides" class="level2">
-<h2 class="anchored" data-anchor-id="study-guides">Study Guides</h2>
-<p>Select the study guide for your course and exam.</p>
-<section id="qumt-2341-business-statistics-i" class="level3">
-<h3 class="anchored" data-anchor-id="qumt-2341-business-statistics-i">QUMT 2341 Business Statistics I</h3>
-<p><a href="./2341-exam-1-guide.html" class="btn btn-primary btn-lg"><strong>Exam 1 Study Guide</strong></a></p>
-<p><a href="./2341-exam-2-guide.html" class="btn btn-primary btn-lg"><strong>Exam 2 Study Guide</strong></a></p>
-<p><a href="./2341-exam-3-guide.html" class="btn btn-primary btn-lg"><strong>Exam 3 Study Guide</strong></a></p>
-<p><a href="./2341-exam-4-guide.html" class="btn btn-primary btn-lg"><strong>Exam 4 Study Guide</strong></a></p>
+<section id="probability" class="level2">
+<h2 class="anchored" data-anchor-id="probability">Probability</h2>
+<p><span class="math display">\[
+P(A) = \frac{\text{number of favorable outcomes}}{\text{total number of outcomes}}
+\]</span></p>
+<section id="unions-a-or-b" class="level3">
+<h3 class="anchored" data-anchor-id="unions-a-or-b">Unions (A or B)</h3>
+<p><span class="math display">\[
+P(A \cup B) = P(A) + P(B) - P(A \cap B)
+\]</span></p>
 </section>
-<section id="qumt-3341-business-statistics-ii" class="level3">
-<h3 class="anchored" data-anchor-id="qumt-3341-business-statistics-ii">QUMT 3341 Business Statistics II</h3>
-<p><a href="./3341-exam-1-guide.html" class="btn btn-info btn-lg"><strong>Exam 1 Study Guide</strong></a></p>
-<p>More study guides will be added as they become available.</p>
+<section id="conditional-probability-a-given-b" class="level3">
+<h3 class="anchored" data-anchor-id="conditional-probability-a-given-b">Conditional Probability (A given B)</h3>
+<p><span class="math display">\[
+P(A \mid B) = \frac{P(A \cap B)}{P(B)}
+\]</span></p>
+</section>
+<section id="intersections-a-and-b" class="level3">
+<h3 class="anchored" data-anchor-id="intersections-a-and-b">Intersections (A and B)</h3>
+<section id="independence" class="level4">
+<h4 class="anchored" data-anchor-id="independence">Independence</h4>
+<p><span class="math display">\[
+P(A \cap B) = P (A\;and\;B) = P(A) \times P(B)
+\]</span></p>
+</section>
+<section id="dependent-multiplication-rule" class="level4">
+<h4 class="anchored" data-anchor-id="dependent-multiplication-rule">Dependent (Multiplication Rule)</h4>
+<p><span class="math display">\[
+P(A \cap B) = P (A\;and\;B)= P(A) \times P(B \vert A)
+\]</span></p>
+</section>
+</section>
+<section id="complement" class="level3">
+<h3 class="anchored" data-anchor-id="complement">Complement</h3>
+<p><span class="math display">\[
+P(A^c)= P (not\;A) = 1 - P(A)
+\]</span></p>
+</section>
+</section>
+<section id="discrete-random-variable" class="level2">
+<h2 class="anchored" data-anchor-id="discrete-random-variable">Discrete Random Variable</h2>
+<section id="expected-value" class="level4">
+<h4 class="anchored" data-anchor-id="expected-value">Expected Value</h4>
+<p><span class="math display">\[
+E(X) = \sum_{i} x_i \, P(X = x_i)
+\]</span></p>
+</section>
+<section id="variance-and-standard-deviation" class="level4">
+<h4 class="anchored" data-anchor-id="variance-and-standard-deviation">Variance and Standard Deviation</h4>
+<p><span class="math display">\[
+\mathrm{Var}(X) = \sum_{i} (x_i - \mu)^2 \, P(X = x_i)\\\sigma = \sqrt{\mathrm{Var}(X)}
+\]</span></p>
+</section>
+</section>
+<section id="discrete-uniform-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="discrete-uniform-distribution">Discrete Uniform Distribution</h2>
+<p><span class="math display">\[
+P(X = x) = \frac{1}{n}
+\]</span></p>
+<section id="expected-value-1" class="level4">
+<h4 class="anchored" data-anchor-id="expected-value-1">Expected Value</h4>
+<p><span class="math display">\[
+E(X) = \frac{\text{first value} + \text{last value}}{2}
+\]</span></p>
+</section>
+</section>
+<section id="binomial-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="binomial-distribution">Binomial Distribution</h2>
+<p><span class="math display">\[
+P(X = x) = \binom{n}{x} p^x (1-p)^{n-x}
+\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 27%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Wording</th>
+<th>Mathematical Form</th>
+<th>R Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>exactly x</td>
+<td><span class="math inline">\(P(X=x)\)</span></td>
+<td><code>dbinom()</code></td>
+</tr>
+<tr class="even">
+<td>at most x<br>
+no more than x</td>
+<td><span class="math inline">\(P(X\le x)\)</span></td>
+<td><code>pbinom()</code></td>
+</tr>
+<tr class="odd">
+<td>less than x</td>
+<td><span class="math inline">\(P(X \lt x)\)</span></td>
+<td><code>pbinom(x-1)</code></td>
+</tr>
+<tr class="even">
+<td>more than x</td>
+<td><span class="math inline">\(P(X \gt x)\)</span></td>
+<td><code>1 - pbinom(x)</code></td>
+</tr>
+<tr class="odd">
+<td>at least x</td>
+<td><span class="math inline">\(P(X \ge x)\)</span></td>
+<td><code>1 - pbinom(x-1)</code></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Equation</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>x</code></td>
+<td><span class="math inline">\(x\)</span></td>
+<td>number of successes</td>
+</tr>
+<tr class="even">
+<td><code>size</code></td>
+<td><span class="math inline">\(n\)</span></td>
+<td>number of trials</td>
+</tr>
+<tr class="odd">
+<td><code>prob</code></td>
+<td><span class="math inline">\(p\)</span></td>
+<td>probabiity of success on each trial</td>
+</tr>
+</tbody>
+</table>
+<section id="expected-value-2" class="level4">
+<h4 class="anchored" data-anchor-id="expected-value-2">Expected Value</h4>
+<p><span class="math display">\[
+E(X) = np
+\]</span></p>
+</section>
+<section id="variance-and-standard-deviation-1" class="level4">
+<h4 class="anchored" data-anchor-id="variance-and-standard-deviation-1">Variance and Standard Deviation</h4>
+<p><span class="math display">\[
+Var(X) = np(1-p)\\SD(X) = \sqrt{np(1-p)}
+\]</span></p>
+</section>
+</section>
+<section id="poisson-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="poisson-distribution">Poisson Distribution</h2>
+<p><span class="math display">\[
+P(X = x) = \frac{e^{-\lambda}\lambda^x}{x!}, \quad x = 0,1,2,\ldots
+\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 27%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Wording</th>
+<th>Mathematical Form</th>
+<th>R Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>exactly x</td>
+<td><span class="math inline">\(P(X=x)\)</span></td>
+<td><code>dpois()</code></td>
+</tr>
+<tr class="even">
+<td>at most x<br>
+no more than x</td>
+<td><span class="math inline">\(P(X\le x)\)</span></td>
+<td><code>ppois()</code></td>
+</tr>
+<tr class="odd">
+<td>less than x</td>
+<td><span class="math inline">\(P(X \lt x)\)</span></td>
+<td><code>ppois(x-1)</code></td>
+</tr>
+<tr class="even">
+<td>more than x</td>
+<td><span class="math inline">\(P(X \gt x)\)</span></td>
+<td><code>1 - ppois(x)</code></td>
+</tr>
+<tr class="odd">
+<td>at least x</td>
+<td><span class="math inline">\(P(X \ge x)\)</span></td>
+<td><code>1 - ppois(x-1)</code></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Equation</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>x</code></td>
+<td><span class="math inline">\(x\)</span></td>
+<td>vector</td>
+</tr>
+<tr class="even">
+<td><code>lambda</code></td>
+<td><span class="math inline">\(\lambda\)</span></td>
+<td>lambda</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hypergeometric-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="hypergeometric-distribution">Hypergeometric Distribution</h2>
+<p><span class="math display">\[
+P(X = x) = \frac{\binom{k}{x}\binom{N-k}{\,n-x\,}}{\binom{N}{n}}
+\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 27%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Wording</th>
+<th>Mathematical Form</th>
+<th>R Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>exactly x</td>
+<td><span class="math inline">\(P(X=x)\)</span></td>
+<td><code>dhyper()</code></td>
+</tr>
+<tr class="even">
+<td>at most x<br>
+no more than x</td>
+<td><span class="math inline">\(P(X\le x)\)</span></td>
+<td><code>phyper()</code></td>
+</tr>
+<tr class="odd">
+<td>less than x</td>
+<td><span class="math inline">\(P(X \lt x)\)</span></td>
+<td><code>phyper(x-1)</code></td>
+</tr>
+<tr class="even">
+<td>more than x</td>
+<td><span class="math inline">\(P(X \gt x)\)</span></td>
+<td><code>1 - phyper(x)</code></td>
+</tr>
+<tr class="odd">
+<td>at least x</td>
+<td><span class="math inline">\(P(X \ge x)\)</span></td>
+<td><code>1 - phyper(x-1)</code></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Equation</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>x</code></td>
+<td><span class="math inline">\(x\)</span></td>
+<td>successes in sample</td>
+</tr>
+<tr class="even">
+<td><code>m</code></td>
+<td><span class="math inline">\(k\)</span></td>
+<td>successes in population</td>
+</tr>
+<tr class="odd">
+<td><code>n</code></td>
+<td><span class="math inline">\(N-k\)</span></td>
+<td>failures in population</td>
+</tr>
+<tr class="even">
+<td><code>k</code></td>
+<td><span class="math inline">\(n\)</span></td>
+<td>sample size</td>
+</tr>
+</tbody>
+</table>
+<section id="expected-value-and-variance" class="level4">
+<h4 class="anchored" data-anchor-id="expected-value-and-variance">Expected Value and Variance</h4>
+<p><span class="math display">\[
+E(X) = n \cdot \frac{k}{N}
+\]</span></p>
+</section>
+<section id="variance" class="level4">
+<h4 class="anchored" data-anchor-id="variance">Variance</h4>
+<p><span class="math display">\[
+\operatorname{Var}(X)=n \cdot \frac{k}{N}\left(1 - \frac{k}{N}\right)\frac{N - n}{N - 1}
+\]</span></p>
 
 
 </section>

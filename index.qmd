@@ -5,21 +5,28 @@ format:
     toc: false
 ---
 
-
 ## Scratch Paper
 
 Use the R Scratch Paper during exams when instructed.
 
-[**Open R Scratch Paper**](scratch-paper.qmd){.btn .btn-secondary .btn-lg}
-
+[**Open R Scratch Paper**](scratch-paper.qmd){.btn .btn-success .btn-lg}
 
 ## Study Guides
 
 Select the study guide for your course and exam.
 
-### QUMT 3341
+### QUMT 2341 Business Statistics I
 
-[**Unit 1 Study Guide**](3341-exam-1-guide.qmd){.btn .btn-secondary .btn-lg}
+[**Exam 1 Study Guide**](2341-exam-1-guide.qmd){.btn .btn-primary .btn-lg}
+
+[**Exam 2 Study Guide**](2341-exam-2-guide.qmd){.btn .btn-primary .btn-lg}
+
+[**Exam 3 Study Guide**](2341-exam-3-guide.qmd){.btn .btn-primary .btn-lg}
+
+[**Exam 4 Study Guide**](2341-exam-4-guide.qmd){.btn .btn-primary .btn-lg}
+
+### QUMT 3341 Business Statistics II
+
+[**Exam 1 Study Guide**](3341-exam-1-guide.qmd){.btn .btn-info .btn-lg}
 
 More study guides will be added as they become available.
-
