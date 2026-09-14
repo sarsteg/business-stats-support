@@ -315,6 +315,55 @@
     "text": "Quick Reference\n\n\n\nProblem\nFormula / R\n\n\n\n\nSample proportion\np_hat &lt;- x / n\n\n\nMean (z) statistic\nz &lt;- (xbar - mu0) / (sigma / sqrt(n))\n\n\nMean (t) statistic\nt_stat &lt;- (xbar - mu0) / (s / sqrt(n))\n\n\nProportion (z) statistic\nz &lt;- (p_hat - p0) / sqrt(p0*(1-p0)/n)\n\n\nChi-square statistic\nchi_square &lt;- (n - 1) * s^2 / sigma0^2\n\n\nDegrees of freedom\ndf &lt;- n - 1\n\n\n\n\n\n\n\n\n\n\n\nDistribution\nCritical Value\n(starts with q)\nP-Value\n(starts with p)\n\n\n\n\nz\nqnorm()\npnorm()\n\n\nt\nqt()\npt()\n\n\nchi-squared\nqchisq()\npchisq()"
   },
   {
+    "objectID": "2341-exam-3-guide.html",
+    "href": "2341-exam-3-guide.html",
+    "title": "exam3",
+    "section": "",
+    "text": "janitor::round_half_up(calculation, round)\nround(calculation, digits = round)"
+  },
+  {
+    "objectID": "2341-exam-3-guide.html#additional-helpful-functions",
+    "href": "2341-exam-3-guide.html#additional-helpful-functions",
+    "title": "exam3",
+    "section": "",
+    "text": "janitor::round_half_up(calculation, round)\nround(calculation, digits = round)"
+  },
+  {
+    "objectID": "2341-exam-3-guide.html#uniform-distribution",
+    "href": "2341-exam-3-guide.html#uniform-distribution",
+    "title": "exam3",
+    "section": "Uniform Distribution",
+    "text": "Uniform Distribution\n\nIdentification\nProblem gives:\n\nthe variable is uniformly distributed\nvalues lie between \\(a\\) and \\(b\\)\nevery value in the interval is equally likely\n\n\n\nKey formulas\nMean:\n\\[\n\\mu = \\frac{a+b}{2}\n\\]\nStandard deviation\n\\[\n\\sigma = \\sqrt{\\frac{(b-a)^2}{12}}\n\\]\nProbability to the right of a cutoff:\n\\[\nP(X &gt; x) = \\frac{b-x}{b-a}\n\\]\nProbability to the left of a cutoff:\n\\[\nP(X &lt; x) = \\frac{x-a}{b-a}\n\\]\n\n\nExample script\n\n# mean and standard deviation\nmu &lt;- (a + b) / 2\nsigma &lt;- sqrt((b - a)^2 / 12)\n\n# probability greater than x\n(b - x) / (b - a)\n\n# probability less than x\n(x - a) / (b - a)"
+  },
+  {
+    "objectID": "2341-exam-3-guide.html#normal-distribution-with-a-single-raw-score",
+    "href": "2341-exam-3-guide.html#normal-distribution-with-a-single-raw-score",
+    "title": "exam3",
+    "section": "Normal distribution with a single raw score",
+    "text": "Normal distribution with a single raw score\n\nIdentification\nProblem gives:\n\na mean and standard deviation\nsays that the variable is normally distributed\nasks about a randomly selected observation\nuses \\(X\\) rather than \\(\\bar{x}\\)\n\n\n\nKey formulas\nFor a value between two numbers:\n\\[\nP(a &lt; X &lt; b)\n\\]\nStandardizing:\n\\[\nP(a &lt; X &lt; b)\n\\]\nFor a value above a cutoff:\n\\[\nP(X &gt; x)\n\\]\nFor a value below a cutoff:\n\\[\nP(X &lt; x)\n\\]\nFor finding a cutoff from a percentile:\n\\[\nP(X \\le x) = p\n\\]\nFor solving for standard deviation:\n\\[\nz = \\frac{x - \\mu}{\\sigma}\\qquad \\Rightarrow \\qquad\\sigma = \\frac{x - \\mu}{z}\n\\]\n\n\nExample script \n\n# between two values\npnorm(upper, mean = mu, sd = sigma) - \n  pnorm(lower, mean = mu, sd = sigma)\n\n# greater than\n1 - pnorm(x, mean = mu, sd = sigma)\n\n# less than\npnorm(x, mean = mu, sd = sigma)\n\n# cutoff from a percentile\nqnorm(p, mean = mu, sd = sigma)\n\n# solve for sigma\nz &lt;- qnorm(p_left)\nsigma &lt;- (x - mu) / z"
+  },
+  {
+    "objectID": "2341-exam-3-guide.html#graphs-of-normal-distributions",
+    "href": "2341-exam-3-guide.html#graphs-of-normal-distributions",
+    "title": "exam3",
+    "section": "Graphs of Normal Distributions",
+    "text": "Graphs of Normal Distributions\n\nIdentification\nConceptual problems comparing:\n\ncenters of the curves\nwidth/spread of the curves\nwhether means are the same or different\nwhether standard deviations are the same or different\n\n\n\nKey ideas\n\\[\n\\text{Different centers} \\Rightarrow \\text{different means}\\\\\n\\text{Wider/flatter curve} \\Rightarrow \\text{larger standard deviation}\\\\\n\\text{Narrower/taller curve} \\Rightarrow \\text{smaller standard deviation}\n\\]"
+  },
+  {
+    "objectID": "2341-exam-3-guide.html#empirical-rule",
+    "href": "2341-exam-3-guide.html#empirical-rule",
+    "title": "exam3",
+    "section": "Empirical Rule",
+    "text": "Empirical Rule\n\nIdentification\nProblem shows:\n\na normal curve\nshaded regions\nlabels involving 𝜇, 𝜇 + 𝜎, 𝜇 + 2𝜎, 𝜇 + 3𝜎\n\n\n\nKey ideas\n\\[\n68\\% \\text{ is within } \\mu \\pm \\sigma\\\\\n95\\% \\text{ is within } \\mu \\pm 2\\sigma\\\\\n99.7\\% \\text{ is within } \\mu \\pm 3\\sigma\n\\]\n\n\nSupporting Script\n\ncurve(dnorm(x), from = -4, to = 4)\nabline(v = c(0, 1, 2, 3), lty = 2)"
+  },
+  {
+    "objectID": "2341-exam-3-guide.html#sampling-distribution-of-the-mean-barx",
+    "href": "2341-exam-3-guide.html#sampling-distribution-of-the-mean-barx",
+    "title": "exam3",
+    "section": "Sampling distribution of the mean \\(\\bar{X}\\)",
+    "text": "Sampling distribution of the mean \\(\\bar{X}\\)\n\nIdentification\nProblem gives:\n\n“sample mean”\n“a random sample of \\(n\\)”\n“what is the probability that the sample mean…”\n“sampling distribution”\n\n\n\nKey formulas\nMean of the sampling distribution:\n\\[\n\\mu_{\\bar{X}} = \\mu\n\\]\nStandard deviation of the sampling distribution, also called the standard error:\n\\[\n\\sigma_{\\bar{X}} = \\frac{\\sigma}{\\sqrt{n}}\n\\]\nIf variance is given first:\n\\[\n\\sigma = \\sqrt{\\text{variance}}\\\\\n\\sigma_{\\bar{X}} = \\frac{\\sigma}{\\sqrt{n}}\n\\]\nProbability forms:\n\\[\nP(\\bar{X} &lt; x)\\\\\nP(\\bar{X} &gt; x)\\\\\nP\\bigl(|\\bar{X} - \\mu| &lt; a\\bigr)\\\\\nP\\bigl(|\\bar{X} - \\mu| &gt; a\\bigr)\n\\]\nExpanded interval forms:\n\\[\nP(\\mu - a &lt; \\bar{X} &lt; \\mu + a)\\\\\nP(\\bar{X} &lt; \\mu - a) + P(\\bar{X} &gt; \\mu + a)\n\\]\n\n\nExample script\n\n# if variance is given\nsigma &lt;- sqrt(variance)\n\n# standard error\nse &lt;- sigma / sqrt(n)\n\n# less than\npnorm(xbar, mean = mu, sd = se)\n\n# greater than\n1 - pnorm(xbar, mean = mu, sd = se)\n\n# within a distance of mu\npnorm(mu + amount, mean = mu, sd = se) -\n  pnorm(mu - amount, mean = mu, sd = se)\n\n# greater than a distance from mu\n1 - (pnorm(mu + amount, mean = mu, sd = se) -\n       pnorm(mu - amount, mean = mu, sd = se))"
+  },
+  {
     "objectID": "2341-exam-1-guide.html",
     "href": "2341-exam-1-guide.html",
     "title": "Exam 1 Formula Guide",
@@ -364,6 +413,118 @@
     "text": "Two Variables\n\nCovariance\n\nx &lt;- c(0.5, 1, 1.5, 2, 3, 3.5, 4, 4.5, 5.5, 6)\ny &lt;- c(63,  66, 69, 72, 78, 81, 84, 87, 90, 96)\n\n# x\nxbar &lt;- mean(x)\nxn   &lt;- length(x)\nxSD  &lt;- sqrt( (sum((x - xbar)^2)) / (length(x)-1) ) # sample is n - 1\n\n# y\nybar &lt;- mean(y)\nySD  &lt;- sqrt( (sum((y - ybar)^2)) / (length(y)-1) ) # sample is n - 1\nyn   &lt;- length(y)\n\n# covariance\ncovariance &lt;- (sum((x - xbar)*(y - ybar)) / (length(x)-1) )\n\ncovariance\n\n\n# cov(x = data$x, y = data$y)\n\n\n\nCorrelation Coefficient\n\n# REQUIRED: Update the covariance section above AND run it ! \nr &lt;- covariance / (xSD * ySD)\n\nr\n\n\ncor(x = data$x, y = data$y)"
   },
   {
+    "objectID": "2341-exam-2-guide.html",
+    "href": "2341-exam-2-guide.html",
+    "title": "Exam 2 Review",
+    "section": "",
+    "text": "janitor::round_half_up(calculation, round)\nMASS::fractions(calculation)\n\n\n\n\nProblem\nPhrase\n\n\n\n\nSample space\nlist all outcomes\n\n\nBasic probability\nfavorable / total\n\n\nMutually exclusive\nCheck overlap\n\n\nConditional probability\n“given that…”\n\n\nMultiplication rule\nindependent events\n\n\nDependent events\nwithout replacement\n\n\nCombinations\nselecting groups\n\n\nComplement rule\n“at least…”\n\n\nExpected value\ngains/losses with probabilities\n\n\nBinomial\nfixed trials, two outcomes\n\n\nPoisson\ncount of events in an interval"
+  },
+  {
+    "objectID": "2341-exam-2-guide.html#additional-helpful-functions",
+    "href": "2341-exam-2-guide.html#additional-helpful-functions",
+    "title": "Exam 2 Review",
+    "section": "",
+    "text": "janitor::round_half_up(calculation, round)\nMASS::fractions(calculation)\n\n\n\n\nProblem\nPhrase\n\n\n\n\nSample space\nlist all outcomes\n\n\nBasic probability\nfavorable / total\n\n\nMutually exclusive\nCheck overlap\n\n\nConditional probability\n“given that…”\n\n\nMultiplication rule\nindependent events\n\n\nDependent events\nwithout replacement\n\n\nCombinations\nselecting groups\n\n\nComplement rule\n“at least…”\n\n\nExpected value\ngains/losses with probabilities\n\n\nBinomial\nfixed trials, two outcomes\n\n\nPoisson\ncount of events in an interval"
+  },
+  {
+    "objectID": "2341-exam-2-guide.html#probability",
+    "href": "2341-exam-2-guide.html#probability",
+    "title": "Exam 2 Review",
+    "section": "Probability",
+    "text": "Probability\n\\[\nP(A) = \\frac{\\text{number of favorable outcomes}}{\\text{total number of outcomes}}\n\\]\n\nUnions (A or B)\n\\[\nP(A \\cup B) = P(A) + P(B) - P(A \\cap B)\n\\]\n\n\nConditional Probability (A given B)\n\\[\nP(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}\n\\]\n\n\nIntersections (A and B)\n\nIndependence\n\\[\nP(A \\cap B) = P (A\\;and\\;B) = P(A) \\times P(B)\n\\]\n\n\nDependent (Multiplication Rule)\n\\[\nP(A \\cap B) = P (A\\;and\\;B)= P(A) \\times P(B \\vert A)\n\\]\n\n\n\nComplement\n\\[\nP(A^c)= P (not\\;A) = 1 - P(A)\n\\]"
+  },
+  {
+    "objectID": "2341-exam-2-guide.html#discrete-random-variable",
+    "href": "2341-exam-2-guide.html#discrete-random-variable",
+    "title": "Exam 2 Review",
+    "section": "Discrete Random Variable",
+    "text": "Discrete Random Variable\n\nExpected Value\n\\[\nE(X) = \\sum_{i} x_i \\, P(X = x_i)\n\\]\n\n\nVariance and Standard Deviation\n\\[\n\\mathrm{Var}(X) = \\sum_{i} (x_i - \\mu)^2 \\, P(X = x_i)\\\\\\sigma = \\sqrt{\\mathrm{Var}(X)}\n\\]"
+  },
+  {
+    "objectID": "2341-exam-2-guide.html#discrete-uniform-distribution",
+    "href": "2341-exam-2-guide.html#discrete-uniform-distribution",
+    "title": "Exam 2 Review",
+    "section": "Discrete Uniform Distribution",
+    "text": "Discrete Uniform Distribution\n\\[\nP(X = x) = \\frac{1}{n}\n\\]\n\nExpected Value\n\\[\nE(X) = \\frac{\\text{first value} + \\text{last value}}{2}\n\\]"
+  },
+  {
+    "objectID": "2341-exam-2-guide.html#binomial-distribution",
+    "href": "2341-exam-2-guide.html#binomial-distribution",
+    "title": "Exam 2 Review",
+    "section": "Binomial Distribution",
+    "text": "Binomial Distribution\n\\[\nP(X = x) = \\binom{n}{x} p^x (1-p)^{n-x}\n\\]\n\n\n\n\n\n\n\n\nWording\nMathematical Form\nR Function\n\n\n\n\nexactly x\n\\(P(X=x)\\)\ndbinom()\n\n\nat most x\nno more than x\n\\(P(X\\le x)\\)\npbinom()\n\n\nless than x\n\\(P(X \\lt x)\\)\npbinom(x-1)\n\n\nmore than x\n\\(P(X \\gt x)\\)\n1 - pbinom(x)\n\n\nat least x\n\\(P(X \\ge x)\\)\n1 - pbinom(x-1)\n\n\n\n\n\n\nArgument\nEquation\nMeaning\n\n\n\n\nx\n\\(x\\)\nnumber of successes\n\n\nsize\n\\(n\\)\nnumber of trials\n\n\nprob\n\\(p\\)\nprobabiity of success on each trial\n\n\n\n\nExpected Value\n\\[\nE(X) = np\n\\]\n\n\nVariance and Standard Deviation\n\\[\nVar(X) = np(1-p)\\\\SD(X) = \\sqrt{np(1-p)}\n\\]"
+  },
+  {
+    "objectID": "2341-exam-2-guide.html#poisson-distribution",
+    "href": "2341-exam-2-guide.html#poisson-distribution",
+    "title": "Exam 2 Review",
+    "section": "Poisson Distribution",
+    "text": "Poisson Distribution\n\\[\nP(X = x) = \\frac{e^{-\\lambda}\\lambda^x}{x!}, \\quad x = 0,1,2,\\ldots\n\\]\n\n\n\n\n\n\n\n\nWording\nMathematical Form\nR Function\n\n\n\n\nexactly x\n\\(P(X=x)\\)\ndpois()\n\n\nat most x\nno more than x\n\\(P(X\\le x)\\)\nppois()\n\n\nless than x\n\\(P(X \\lt x)\\)\nppois(x-1)\n\n\nmore than x\n\\(P(X \\gt x)\\)\n1 - ppois(x)\n\n\nat least x\n\\(P(X \\ge x)\\)\n1 - ppois(x-1)\n\n\n\n\n\n\nArgument\nEquation\nMeaning\n\n\n\n\nx\n\\(x\\)\nvector\n\n\nlambda\n\\(\\lambda\\)\nlambda"
+  },
+  {
+    "objectID": "2341-exam-2-guide.html#hypergeometric-distribution",
+    "href": "2341-exam-2-guide.html#hypergeometric-distribution",
+    "title": "Exam 2 Review",
+    "section": "Hypergeometric Distribution",
+    "text": "Hypergeometric Distribution\n\\[\nP(X = x) = \\frac{\\binom{k}{x}\\binom{N-k}{\\,n-x\\,}}{\\binom{N}{n}}\n\\]\n\n\n\n\n\n\n\n\nWording\nMathematical Form\nR Function\n\n\n\n\nexactly x\n\\(P(X=x)\\)\ndhyper()\n\n\nat most x\nno more than x\n\\(P(X\\le x)\\)\nphyper()\n\n\nless than x\n\\(P(X \\lt x)\\)\nphyper(x-1)\n\n\nmore than x\n\\(P(X \\gt x)\\)\n1 - phyper(x)\n\n\nat least x\n\\(P(X \\ge x)\\)\n1 - phyper(x-1)\n\n\n\n\n\n\nArgument\nEquation\nMeaning\n\n\n\n\nx\n\\(x\\)\nsuccesses in sample\n\n\nm\n\\(k\\)\nsuccesses in population\n\n\nn\n\\(N-k\\)\nfailures in population\n\n\nk\n\\(n\\)\nsample size\n\n\n\n\nExpected Value and Variance\n\\[\nE(X) = n \\cdot \\frac{k}{N}\n\\]\n\n\nVariance\n\\[\n\\operatorname{Var}(X)=n \\cdot \\frac{k}{N}\\left(1 - \\frac{k}{N}\\right)\\frac{N - n}{N - 1}\n\\]"
+  },
+  {
+    "objectID": "2341-exam-4-guide.html",
+    "href": "2341-exam-4-guide.html",
+    "title": "Exam 4",
+    "section": "",
+    "text": "\\[\n\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\n\\]\n\n\n\nxbar       &lt;- ___\nsigma      &lt;- ___\nn          &lt;- ___\nconf_level &lt;- 0.95\n\nalpha &lt;- 1 - conf_level\nz     &lt;- qnorm(1 - alpha/2)\n\nSE &lt;- sigma / sqrt(n)\nE  &lt;- z * SE\n\nlower &lt;- xbar - E\nupper &lt;- xbar + E\n\nlower\nupper\n\n\n\n\nσ is given → use z\nProblem says “mean”\n\n\n\n\n\n\n\n\\[\n\\bar{x} \\pm t_{\\alpha/2,df} \\cdot \\frac{s}{\\sqrt{n}}\n\\]\n\n\n\nxbar       &lt;- ___\ns          &lt;- ___\nn          &lt;- ___\nconf_level &lt;- 0.95\n\nalpha &lt;- 1 - conf_level\ndf    &lt;- n - 1\ntcrit &lt;- qt(1 - alpha/2, df)\n\nSE &lt;- s / sqrt(n)\nE  &lt;- tcrit * SE\n\nlower &lt;- xbar - E\nupper &lt;- xbar + E\n\nlower\nupper\n\n\n\n\nσ not given\ns is given → use t\n\n\n\n\n\n\n\n\\[\n\\hat{p} \\pm z_{\\alpha/2} \\cdot \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\n\\]\n\n\n\nx          &lt;- ___   # number of successes\nn          &lt;- ___\nconf_level &lt;- 0.95\n\nphat &lt;- round(x / n, 3)\n\nalpha &lt;- 1 - conf_level\nz     &lt;- qnorm(1 - alpha/2)\n\nSE &lt;- sqrt(phat * (1 - phat) / n)\nE  &lt;- z * SE\n\nlower &lt;- phat - E\nupper &lt;- phat + E\n\nlower\nupper\n\n\n\nn * phat\nn * (1 - phat)\nBoth should be ≥ 10\n\n\n\n\nWords like: proportion, percent, defective, success/failure\n\n\n\n\n\n\n\n\\[\n\\frac{(n-1)s^2}{\\chi^2_{\\alpha/2}} &lt; \\sigma^2 &lt; \\frac{(n-1)s^2}{\\chi^2_{1-\\alpha/2}}\n\\]\n\n\n\ns          &lt;- ___\nn          &lt;- ___\nconf_level &lt;- 0.95\n\nalpha &lt;- 1 - conf_level\ndf    &lt;- n - 1\n\nchi_upper &lt;- qchisq(1 - alpha/2, df)\nchi_lower &lt;- qchisq(alpha/2, df)\n\ns2 &lt;- s^2\n\nlower_var &lt;- (df * s2) / chi_upper\nupper_var &lt;- (df * s2) / chi_lower\n\nlower_sd &lt;- sqrt(lower_var)\nupper_sd &lt;- sqrt(upper_var)\n\nlower_var\nupper_var\nlower_sd\nupper_sd\n\n\n\n\nMentions variance or standard deviation\nUses chi-square\n\n\n\n\n\n\n\n\\[\nUCL = \\mu + 3\\frac{\\sigma}{\\sqrt{n}}\n\\]\n\\[\nCL = \\mu\n\\]\n\\[\nLCL = \\mu - 3\\frac{\\sigma}{\\sqrt{n}}\n\\]\n\n\n\nmu    &lt;- ___\nsigma &lt;- ___\nn     &lt;- ___\n\nUCL &lt;- mu + 3 * sigma / sqrt(n)\nCL  &lt;- mu\nLCL &lt;- mu - 3 * sigma / sqrt(n)\n\nUCL\nCL\nLCL\n\n\n\nxbar &lt;- c(___, ___, ___)\n\nxbar &gt; UCL\nxbar &lt; LCL\n\n\n\n\n\n\n\n\ndata &lt;- matrix(c(\n  ___, ___, ___,\n  ___, ___, ___,\n  ___, ___, ___\n), nrow = ___, byrow = TRUE)\n\n\n\nxbar &lt;- rowMeans(data)\nR    &lt;- apply(data, 1, function(x) max(x) - min(x))\n\nxbarbar &lt;- mean(xbar)\nRbar    &lt;- mean(R)\n\n\n\nA2 &lt;- ___\nD3 &lt;- ___\nD4 &lt;- ___\n\n\n\nUCL_xbar &lt;- xbarbar + A2 * Rbar\nCL_xbar  &lt;- xbarbar\nLCL_xbar &lt;- xbarbar - A2 * Rbar\n\nUCL_R &lt;- D4 * Rbar\nCL_R  &lt;- Rbar\nLCL_R &lt;- D3 * Rbar\n\n\n\nxbar &gt; UCL_xbar | xbar &lt; LCL_xbar\nR &gt; UCL_R | R &lt; LCL_R\n\n\n\n\n\n\n\np &lt;- ___\nn &lt;- ___\nd &lt;- c(___, ___, ___)\n\nphat &lt;- d / n\n\nSE &lt;- sqrt(p * (1 - p) / n)\n\nUCL &lt;- p + 3 * SE\nCL  &lt;- p\nLCL &lt;- max(0, p - 3 * SE)\n\nphat &gt; UCL | phat &lt; LCL\n\n\n\nn &lt;- ___\nd &lt;- c(___, ___, ___)\n\nm &lt;- length(d)\n\nphat &lt;- d / n\npbar &lt;- sum(d) / (m * n)\n\nSE &lt;- sqrt(pbar * (1 - pbar) / n)\n\nUCL &lt;- pbar + 3 * SE\nCL  &lt;- pbar\nLCL &lt;- max(0, pbar - 3 * SE)\n\nphat &gt; UCL | phat &lt; LCL"
+  },
+  {
+    "objectID": "2341-exam-4-guide.html#mean-σ-known",
+    "href": "2341-exam-4-guide.html#mean-σ-known",
+    "title": "Exam 4",
+    "section": "",
+    "text": "\\[\n\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\n\\]\n\n\n\nxbar       &lt;- ___\nsigma      &lt;- ___\nn          &lt;- ___\nconf_level &lt;- 0.95\n\nalpha &lt;- 1 - conf_level\nz     &lt;- qnorm(1 - alpha/2)\n\nSE &lt;- sigma / sqrt(n)\nE  &lt;- z * SE\n\nlower &lt;- xbar - E\nupper &lt;- xbar + E\n\nlower\nupper\n\n\n\n\nσ is given → use z\nProblem says “mean”"
+  },
+  {
+    "objectID": "2341-exam-4-guide.html#mean-σ-unknown",
+    "href": "2341-exam-4-guide.html#mean-σ-unknown",
+    "title": "Exam 4",
+    "section": "",
+    "text": "\\[\n\\bar{x} \\pm t_{\\alpha/2,df} \\cdot \\frac{s}{\\sqrt{n}}\n\\]\n\n\n\nxbar       &lt;- ___\ns          &lt;- ___\nn          &lt;- ___\nconf_level &lt;- 0.95\n\nalpha &lt;- 1 - conf_level\ndf    &lt;- n - 1\ntcrit &lt;- qt(1 - alpha/2, df)\n\nSE &lt;- s / sqrt(n)\nE  &lt;- tcrit * SE\n\nlower &lt;- xbar - E\nupper &lt;- xbar + E\n\nlower\nupper\n\n\n\n\nσ not given\ns is given → use t"
+  },
+  {
+    "objectID": "2341-exam-4-guide.html#population-proportion",
+    "href": "2341-exam-4-guide.html#population-proportion",
+    "title": "Exam 4",
+    "section": "",
+    "text": "\\[\n\\hat{p} \\pm z_{\\alpha/2} \\cdot \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\n\\]\n\n\n\nx          &lt;- ___   # number of successes\nn          &lt;- ___\nconf_level &lt;- 0.95\n\nphat &lt;- round(x / n, 3)\n\nalpha &lt;- 1 - conf_level\nz     &lt;- qnorm(1 - alpha/2)\n\nSE &lt;- sqrt(phat * (1 - phat) / n)\nE  &lt;- z * SE\n\nlower &lt;- phat - E\nupper &lt;- phat + E\n\nlower\nupper\n\n\n\nn * phat\nn * (1 - phat)\nBoth should be ≥ 10\n\n\n\n\nWords like: proportion, percent, defective, success/failure"
+  },
+  {
+    "objectID": "2341-exam-4-guide.html#variance-standard-deviation",
+    "href": "2341-exam-4-guide.html#variance-standard-deviation",
+    "title": "Exam 4",
+    "section": "",
+    "text": "\\[\n\\frac{(n-1)s^2}{\\chi^2_{\\alpha/2}} &lt; \\sigma^2 &lt; \\frac{(n-1)s^2}{\\chi^2_{1-\\alpha/2}}\n\\]\n\n\n\ns          &lt;- ___\nn          &lt;- ___\nconf_level &lt;- 0.95\n\nalpha &lt;- 1 - conf_level\ndf    &lt;- n - 1\n\nchi_upper &lt;- qchisq(1 - alpha/2, df)\nchi_lower &lt;- qchisq(alpha/2, df)\n\ns2 &lt;- s^2\n\nlower_var &lt;- (df * s2) / chi_upper\nupper_var &lt;- (df * s2) / chi_lower\n\nlower_sd &lt;- sqrt(lower_var)\nupper_sd &lt;- sqrt(upper_var)\n\nlower_var\nupper_var\nlower_sd\nupper_sd\n\n\n\n\nMentions variance or standard deviation\nUses chi-square"
+  },
+  {
+    "objectID": "2341-exam-4-guide.html#x-bar-chart-μ-and-σ-known",
+    "href": "2341-exam-4-guide.html#x-bar-chart-μ-and-σ-known",
+    "title": "Exam 4",
+    "section": "",
+    "text": "\\[\nUCL = \\mu + 3\\frac{\\sigma}{\\sqrt{n}}\n\\]\n\\[\nCL = \\mu\n\\]\n\\[\nLCL = \\mu - 3\\frac{\\sigma}{\\sqrt{n}}\n\\]\n\n\n\nmu    &lt;- ___\nsigma &lt;- ___\nn     &lt;- ___\n\nUCL &lt;- mu + 3 * sigma / sqrt(n)\nCL  &lt;- mu\nLCL &lt;- mu - 3 * sigma / sqrt(n)\n\nUCL\nCL\nLCL\n\n\n\nxbar &lt;- c(___, ___, ___)\n\nxbar &gt; UCL\nxbar &lt; LCL"
+  },
+  {
+    "objectID": "2341-exam-4-guide.html#x-bar-and-r-charts-σ-unknown",
+    "href": "2341-exam-4-guide.html#x-bar-and-r-charts-σ-unknown",
+    "title": "Exam 4",
+    "section": "",
+    "text": "data &lt;- matrix(c(\n  ___, ___, ___,\n  ___, ___, ___,\n  ___, ___, ___\n), nrow = ___, byrow = TRUE)\n\n\n\nxbar &lt;- rowMeans(data)\nR    &lt;- apply(data, 1, function(x) max(x) - min(x))\n\nxbarbar &lt;- mean(xbar)\nRbar    &lt;- mean(R)\n\n\n\nA2 &lt;- ___\nD3 &lt;- ___\nD4 &lt;- ___\n\n\n\nUCL_xbar &lt;- xbarbar + A2 * Rbar\nCL_xbar  &lt;- xbarbar\nLCL_xbar &lt;- xbarbar - A2 * Rbar\n\nUCL_R &lt;- D4 * Rbar\nCL_R  &lt;- Rbar\nLCL_R &lt;- D3 * Rbar\n\n\n\nxbar &gt; UCL_xbar | xbar &lt; LCL_xbar\nR &gt; UCL_R | R &lt; LCL_R"
+  },
+  {
+    "objectID": "2341-exam-4-guide.html#p-chart",
+    "href": "2341-exam-4-guide.html#p-chart",
+    "title": "Exam 4",
+    "section": "",
+    "text": "p &lt;- ___\nn &lt;- ___\nd &lt;- c(___, ___, ___)\n\nphat &lt;- d / n\n\nSE &lt;- sqrt(p * (1 - p) / n)\n\nUCL &lt;- p + 3 * SE\nCL  &lt;- p\nLCL &lt;- max(0, p - 3 * SE)\n\nphat &gt; UCL | phat &lt; LCL\n\n\n\nn &lt;- ___\nd &lt;- c(___, ___, ___)\n\nm &lt;- length(d)\n\nphat &lt;- d / n\npbar &lt;- sum(d) / (m * n)\n\nSE &lt;- sqrt(pbar * (1 - pbar) / n)\n\nUCL &lt;- pbar + 3 * SE\nCL  &lt;- pbar\nLCL &lt;- max(0, pbar - 3 * SE)\n\nphat &gt; UCL | phat &lt; LCL"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Business Statistics Support",
@@ -382,6 +543,6 @@
     "href": "index.html#study-guides",
     "title": "Business Statistics Support",
     "section": "Study Guides",
-    "text": "Study Guides\nSelect the study guide for your course and exam.\n\nQUMT 3341\nUnit 1 Study Guide\nMore study guides will be added as they become available."
+    "text": "Study Guides\nSelect the study guide for your course and exam.\n\nQUMT 2341 Business Statistics I\nExam 1 Study Guide\nExam 2 Study Guide\nExam 3 Study Guide\nExam 4 Study Guide\n\n\nQUMT 3341 Business Statistics II\nExam 1 Study Guide\nMore study guides will be added as they become available."
   }
 ]
