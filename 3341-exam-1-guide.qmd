@@ -1,0 +1,331 @@
+---
+title: "Study Guide for Unit 1"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-copy: true
+    code-overflow: wrap
+
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+## 1. Hypothesis Testing
+
+Null hypothesis:
+
+$$
+H_0: \text{parameter} = \text{hypothesized value}
+$$
+
+Alternative hypotheses:
+
+| Research question | Alternative | Test |
+|----|----|----|
+| Greater than | (H_a: $\text{parameter}$ \> $\text{value}$) | Right-tailed |
+| Less than | (H_a: $\text{parameter}$ \< $\text{value}$) | Left-tailed |
+| Different from | (H_a: $\text{parameter}$ $\ne$ $\text{value}$) | Two-tailed |
+
+##### Decision Using a P-Value
+
+-   If ($p \le \alpha$), **reject (**$H_0$**)**.
+-   If ($p > \alpha$), **fail to reject (**$H_0$**)**.
+
+## 2. One-Sample ($z$) Test for a Mean
+
+Use when the population standard deviation ($\sigma$) is [known]{.underline}.
+
+##### Test Statistic
+
+$$
+z=\frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}
+$$
+
+where:
+
+-   $\bar{x}$ = sample mean
+-   $\mu_0$ = hypothesized population mean
+-   $\sigma$ = population standard deviation
+-   $n$ = sample size
+
+``` r
+z <- (xbar - mu0) / (sigma / sqrt(n))
+```
+
+##### P-Value
+
+``` r
+# Left-tailed
+pnorm(z)
+
+# Right-tailed
+1 - pnorm(z)
+
+# Two-tailed
+2 * (1 - pnorm(abs(z)))
+```
+
+##### Critical Values
+
+``` r
+# Left-tailed
+qnorm(alpha)
+
+# Right-tailed
+qnorm(1 - alpha)
+
+# Two-tailed
+qnorm(1 - alpha / 2)
+```
+
+## 3. One-Sample (t) Test for a Mean
+
+Use when the population standard deviation is [un]{.underline}known and $s$ is used instead.
+
+##### Test Statistic
+
+$$
+t=\frac{\bar{x}-\mu_0}{s/\sqrt{n}}
+$$
+
+##### Degrees of Freedom
+
+$$
+df=n-1
+$$
+
+``` r
+df <- n - 1
+
+t_stat <- (xbar - mu0) / (s / sqrt(n))
+```
+
+##### P-Value
+
+``` r
+# Left-tailed
+pt(t_stat, df)
+
+# Right-tailed
+1 - pt(t_stat, df)
+pt(t_stat, df, lower.tail = FALSE)
+
+# Two-tailed
+2 * pt(-abs(t_stat), df)
+```
+
+##### Critical Values
+
+``` r
+# Left-tailed
+qt(alpha, df)
+
+# Right-tailed
+qt(1 - alpha, df)
+qt(alpha, df, lower.tail = FALSE)
+
+# Two-tailed
+qt(1 - alpha / 2, df)
+```
+
+## 4. Confidence Interval for a Population Mean
+
+##### When $\sigma$ Is [Known]{.underline}
+
+$$
+\bar{x}\pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}
+$$
+
+``` r
+z_critical <- qnorm(1 - alpha / 2)
+
+margin_error <- z_critical * sigma / sqrt(n)
+
+lower <- xbar - margin_error
+upper <- xbar + margin_error
+```
+
+##### When $\sigma$ Is [Un]{.underline}known
+
+$$
+\bar{x}\pm t_{\alpha/2,df}\frac{s}{\sqrt{n}}
+$$
+
+with:
+
+$$
+df=n-1
+$$
+
+``` r
+df <- n - 1
+
+t_critical <- qt(1 - alpha / 2, df)
+
+margin_error <- t_critical * s / sqrt(n)
+
+lower <- xbar - margin_error
+upper <- xbar + margin_error
+
+c(lower = lower, upper = upper)
+```
+
+##### CI for a Two-Tailed Test
+
+For:
+
+$$
+H_0:\mu=\mu_0
+$$
+
+-   If $\mu_0$ is **inside** the confidence interval, fail to reject $H_0$.
+-   If $\mu_0$ is **outside** the confidence interval, reject $H_0$.
+
+## 5. One-Proportion $z$ Test
+
+Use when testing a population proportion.
+
+##### Sample Proportion
+
+$$
+\hat{p}=\frac{x}{n}
+$$
+
+``` r
+p_hat <- x / n
+```
+
+where $x$ is the number with the characteristic of interest.
+
+##### Check the Conditions
+
+Both should be at least [5]{.underline}:
+
+$$
+np_0\ge5
+$$
+
+$$
+n(1-p_0)\ge5
+$$
+
+``` r
+n * p0
+n * (1 - p0)
+```
+
+##### Test Statistic
+
+$$
+z=
+\frac{\hat{p}-p_0}
+{\sqrt{\frac{p_0(1-p_0)}{n}}}
+$$
+
+``` r
+z <- (p_hat - p0) /
+     sqrt(p0 * (1 - p0) / n)
+```
+
+Then use the same `pnorm()` commands as any other $z$ test:
+
+``` r
+# Left-tailed
+pnorm(z)
+
+# Right-tailed
+1 - pnorm(z)
+pnorm(z, lower.tail = FALSE)
+
+# Two-tailed
+2 * (1 - pnorm(abs(z)))
+```
+
+## 6. Chi-Square Test for a Population Variance
+
+Use when testing a **population variance or standard deviation**.
+
+If standard deviations are given, convert them to variance:
+
+$$
+s^2=(s)^2
+$$
+
+$$
+\sigma_0^2=(\sigma_0)^2
+$$
+
+``` r
+s^2
+sigma0^2
+```
+
+##### Test Statistic
+
+$$
+\chi^2=
+\frac{(n-1)s^2}{\sigma_0^2}
+$$
+
+##### Degrees of Freedom
+
+$$
+df=n-1
+$$
+
+``` r
+df <- n - 1
+
+chi_square <- (n - 1) * s^2 / sigma0^2
+```
+
+##### Critical Values
+
+``` r
+# Left-tailed
+qchisq(alpha, df)
+
+# Right-tailed
+qchisq(1 - alpha, df)
+qchisq(alpha, df, lower.tail = FALSE)
+
+# Two-tailed
+lower <- qchisq(alpha / 2, df)
+upper <- qchisq(1 - alpha / 2, df)
+```
+
+##### P-Values
+
+``` r
+# Left-tailed
+pchisq(chi_square, df)
+
+# Right-tailed
+1 - pchisq(chi_square, df)
+pchisq(chi_square, df, lower.tail = FALSE)
+```
+
+## Quick Reference
+
+| Problem                  | Formula / R                              |
+|--------------------------|------------------------------------------|
+| Sample proportion        | `p_hat <- x / n`                         |
+| Mean (z) statistic       | `z <- (xbar - mu0) / (sigma / sqrt(n))`  |
+| Mean (t) statistic       | `t_stat <- (xbar - mu0) / (s / sqrt(n))` |
+| Proportion (z) statistic | `z <- (p_hat - p0) / sqrt(p0*(1-p0)/n)`  |
+| Chi-square statistic     | `chi_square <- (n - 1) * s^2 / sigma0^2` |
+| Degrees of freedom       | `df <- n - 1`                            |
+
++--------------+-------------------+-------------------+
+| Distribution | Critical Value\   | P-Value\          |
+|              | (starts with *q*) | (starts with *p*) |
++==============+===================+===================+
+| z            | `qnorm()`         | `pnorm()`         |
++--------------+-------------------+-------------------+
+| t            | `qt()`            | `pt()`            |
++--------------+-------------------+-------------------+
+| chi-squared  | `qchisq()`        | `pchisq()`        |
++--------------+-------------------+-------------------+
