@@ -1,0 +1,17 @@
+:root {
+  --quarto-sidebar-width: 140px;
+}
+
+.sidebar,
+#quarto-sidebar {
+  width: 140px !important;
+  min-width: 140px !important;
+}
+
+.sidebar-menu-container {
+  width: 140px !important;
+}
+
+body.sidebar-navigation {
+  grid-template-columns: 140px minmax(0, 1fr) !important;
+}
