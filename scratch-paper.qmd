@@ -1,0 +1,336 @@
+---
+title: "Scratch Paper for Exam"
+format: 
+  html: 
+    toc: true
+    toc-location: left
+    toc-title: "Questions"
+    toc-depth: 2
+    css: styles.css
+engine: knitr
+filters: 
+  - webr
+---
+
+v1.01
+
+Use this as scratch paper for R calculations during the Exam.
+
+Each section corresponds to a question on the Exam. Enter and run your R code in the code box. Your results will appear below the box.
+
+Enter your final answer in Hawkes Learning in the exam. This page does ***not*** save or submit your work. Refreshing the page will reset the page and remove your work.
+
+*Similar* functions available:
+
+-   janitor::round_half_up(value, digit): rounds numbers to specified digits using classic rounding technique
+
+-   descr::freq(vector): creates frequency table
+
+-   mode(data): returns most frequent value(s)
+
+```{webr-r}
+#| context: setup
+# Helper functions
+
+# janitor::round_half_up() -----------------------------------------------------
+round_half_up <- function(x, digits = 0) {
+  multiplier <- 10^digits
+  
+  sign(x) * floor(abs(x) * multiplier + 0.5) / multiplier
+}
+
+# descr:freq() -----------------------------------------------------
+freq <- function(x, w = NULL, useNA = "no", digits = 2) {
+  
+  # If no weights are supplied, use a weight of 1 for each observation
+  if (is.null(w)) {
+    w <- rep(1, length(x))
+  }
+  
+  # Basic checks
+  if (length(x) != length(w)) {
+    stop("x and w must have the same length.")
+  }
+  
+  if (!is.numeric(w)) {
+    stop("w must be numeric.")
+  }
+  
+  # Handle missing values
+  if (useNA == "no") {
+    keep <- !is.na(x) & !is.na(w)
+    x <- x[keep]
+    w <- w[keep]
+  }
+  
+  # Weighted frequencies
+  values <- unique(x)
+  
+  frequency <- sapply(values, function(v) {
+    sum(w[x == v], na.rm = TRUE)
+  })
+  
+  # Sort values in a sensible order
+  ord <- order(values)
+  values <- values[ord]
+  frequency <- frequency[ord]
+  
+  percent <- frequency / sum(frequency) * 100
+  
+  result <- data.frame(
+    Value = values,
+    Frequency = frequency,
+    Percent = round_half_up(percent, digits),
+    Cumulative_Frequency = cumsum(frequency),
+    Cumulative_Percent = round_half_up(cumsum(percent), digits),
+    row.names = NULL
+  )
+  
+  total <- data.frame(
+    Value = "Total",
+    Frequency = sum(frequency),
+    Percent = 100,
+    Cumulative_Frequency = NA,
+    Cumulative_Percent = NA
+  )
+  
+  rbind(result, total)
+}
+
+mode <- function(x){
+  ta = table(x)
+  tam = max(ta)
+  if (all(ta == tam))
+    mod = NA
+  else
+    if(is.numeric(x))
+      mod = as.numeric(names(ta)[ta == tam])
+  else
+    mod = names(ta)[ta == tam]
+  return(mod)
+}
+```
+
+## Q1
+
+```{webr-r}
+
+```
+
+## Q2
+
+```{webr-r}
+
+```
+
+## Q3
+
+```{webr-r}
+
+```
+
+## Q4
+
+```{webr-r}
+
+```
+
+## Q5
+
+```{webr-r}
+
+```
+
+## Q6
+
+```{webr-r}
+
+```
+
+## Q7
+
+```{webr-r}
+
+```
+
+## Q8
+
+```{webr-r}
+
+```
+
+## Q9
+
+```{webr-r}
+
+```
+
+## Q10
+
+```{webr-r}
+
+```
+
+## Q11
+
+```{webr-r}
+
+```
+
+## Q12
+
+```{webr-r}
+
+```
+
+## Q13
+
+```{webr-r}
+
+```
+
+## Q14
+
+```{webr-r}
+
+```
+
+## Q15
+
+```{webr-r}
+
+```
+
+## Q16
+
+```{webr-r}
+
+```
+
+## Q17
+
+```{webr-r}
+
+```
+
+## Q18
+
+```{webr-r}
+
+```
+
+## Q19
+
+```{webr-r}
+
+```
+
+## Q20
+
+```{webr-r}
+
+```
+
+## Q21
+
+```{webr-r}
+
+```
+
+## Q22
+
+```{webr-r}
+
+```
+
+## Q23
+
+```{webr-r}
+
+```
+
+## Q24
+
+```{webr-r}
+
+```
+
+## Q25
+
+```{webr-r}
+
+```
+
+## Q26
+
+```{webr-r}
+
+```
+
+## Q27
+
+```{webr-r}
+
+```
+
+## Q28
+
+```{webr-r}
+
+```
+
+## Q29
+
+```{webr-r}
+
+```
+
+## Q30
+
+```{webr-r}
+
+```
+
+## Q31
+
+```{webr-r}
+
+```
+
+## Q32
+
+```{webr-r}
+
+```
+
+## Q33
+
+```{webr-r}
+
+```
+
+## Q34
+
+```{webr-r}
+
+```
+
+## Q35
+
+```{webr-r}
+
+```
+
+## Extra Code Chunks
+
+```{webr-r}
+
+```
+
+```{webr-r}
+
+```
+
+```{webr-r}
+
+```

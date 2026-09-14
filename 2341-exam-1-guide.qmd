@@ -8,8 +8,10 @@ format:
     toc-depth: 2
     css: styles.css
 engine: knitr
-filters: 
-  - webr
+execute:
+  eval: false
+  warning: false
+  message: false
 ---
 
 ## Suggestions
