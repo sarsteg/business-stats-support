@@ -1,18 +1,18 @@
 ---
 title: "Scratch Paper for Exam"
+subtitle: "v1.01"
+date: "2026-09-14"
 format: 
   html: 
     toc: true
     toc-location: left
     toc-title: "Questions"
-    toc-depth: 2
+    toc-depth: 1
     css: styles.css
 engine: knitr
 filters: 
   - webr
 ---
-
-v1.01
 
 Use this as scratch paper for R calculations during the Exam.
 
@@ -25,8 +25,6 @@ Enter your final answer in Hawkes Learning in the exam. This page does ***not***
 -   janitor::round_half_up(value, digit): rounds numbers to specified digits using classic rounding technique
 
 -   descr::freq(vector): creates frequency table
-
--   mode(data): returns most frequent value(s)
 
 ```{webr-r}
 #| context: setup
@@ -95,19 +93,6 @@ freq <- function(x, w = NULL, useNA = "no", digits = 2) {
   )
   
   rbind(result, total)
-}
-
-mode <- function(x){
-  ta = table(x)
-  tam = max(ta)
-  if (all(ta == tam))
-    mod = NA
-  else
-    if(is.numeric(x))
-      mod = as.numeric(names(ta)[ta == tam])
-  else
-    mod = names(ta)[ta == tam]
-  return(mod)
 }
 ```
 

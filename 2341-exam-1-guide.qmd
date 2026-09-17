@@ -27,7 +27,67 @@ execute:
 
 -   **YOU GOT THIS!**
 
-### Helpful Excel Formulas
+### Using R
+
+| Task            | R code   | Example              |
+|-----------------|----------|----------------------|
+| Create a vector | `c()`    | `x <- c(10, 20, 30)` |
+| Save a value    | `<-`     | `n <- 10`            |
+| Sort values     | `sort()` | `sort(x)`            |
+
+### Basic Math in R
+
++----------------------+----------------------+----------------------+
+| Operation            | R code               | Example              |
++======================+======================+======================+
+| Addition             | `+`                  | `10 + 5` → `15`      |
++----------------------+----------------------+----------------------+
+| Subtraction          | `-`                  | `10 - 5` → `5`       |
++----------------------+----------------------+----------------------+
+| Multiplication       | `*`                  | `10 * 5` → `50`      |
++----------------------+----------------------+----------------------+
+| Division             | `/`                  | `10 / 5` → `2`       |
++----------------------+----------------------+----------------------+
+| Exponent / power     | `^`                  | `4^2` → `16`         |
++----------------------+----------------------+----------------------+
+| Square root          | `sqrt()`             | `sqrt(25)` → `5`     |
++----------------------+----------------------+----------------------+
+| Absolute value       | `abs()`              | `abs(-4)` → `4`      |
++----------------------+----------------------+----------------------+
+| Parentheses          | `()`                 | `(10 + 5) / 3` → `5` |
++----------------------+----------------------+----------------------+
+
+### Basic Functions in R
+
++---------------------+----------------------------+-----------------------------------------------+
+| Calculation         | R code                     | Example                                       |
++=====================+============================+===============================================+
+| Sum                 | `sum()`                    | `sum(c(2, 4, 6))` → `12`                      |
++---------------------+----------------------------+-----------------------------------------------+
+| Mean                | `mean()`                   | `mean(c(2, 4, 6))` → `4`                      |
++---------------------+----------------------------+-----------------------------------------------+
+| Median              | `median()`                 | `median(c(2, 4, 9))` → `4`                    |
++---------------------+----------------------------+-----------------------------------------------+
+| Minimum             | `min()`                    | `min(c(2, 4, 6))` → `2`                       |
++---------------------+----------------------------+-----------------------------------------------+
+| Maximum             | `max()`                    | `max(c(2, 4, 6))` → `6`                       |
++---------------------+----------------------------+-----------------------------------------------+
+| Range               | `range()`                  | `range(c(2, 4, 6))` → `2 6`                   |
++---------------------+----------------------------+-----------------------------------------------+
+| Variance            | `var()`                    | `var(c(2, 4, 6))`                             |
++---------------------+----------------------------+-----------------------------------------------+
+| Standard deviation  | `sd()`                     | `sd(c(2, 4, 6))`                              |
++---------------------+----------------------------+-----------------------------------------------+
+| Number of values    | `length()`                 | `length(c(2, 4, 6))` → `3`                    |
++---------------------+----------------------------+-----------------------------------------------+
+| Round a result      | `janitor::round_half_up()` | `janitor::round_half_up(3.14159, 2)` → `3.14` |
++---------------------+----------------------------+-----------------------------------------------+
+| Summary statistics  | `summary()`                | `summary(x)`                                  |
+|                     |                            |                                               |
+|                     |                            | `summary(data)`                               |
++---------------------+----------------------------+-----------------------------------------------+
+
+### Excel Formulas
 
 -   =TEXTJOIN(", ", TRUE, A1:A14)
 
@@ -39,12 +99,36 @@ execute:
 
 ## Frequency Tables
 
+Relative frequency is:
+
+$$
+\text{Relative Frequency} = \frac{f}{n}
+$$
+
+Percentage is:
+
+$$
+\text{Percentage} = \frac{f}{n}\times 100
+$$
+
+where $f$ is the frequency and nn is the total number of observations.
+
 ```{r}
-library(descr)
+install.packages("descr") #install the package *once* if you chose to use this option
+library(descr) # load the package from your library
+descr::freq(as.ordered(data$variable), plot = FALSE) # function freq()
 ```
 
 ```{r}
-descr::freq(as.ordered(data$variable), plot = FALSE)
+x <- c("A", "A", "B", "B", "B", "C")
+
+freq <- table(x)
+n <- length(x)
+
+freq                    # Frequency
+freq / n                # Relative frequency
+(freq / n) * 100        # Percentage
+cumsum(freq)            # Cumulative frequency
 ```
 
 ## Central Tendency
@@ -62,7 +146,7 @@ lsr::modeOf(data$variable, na.rm = TRUE)
 ```{r}
 # Simple histogram
 x <- c(13,13,-5,-5,13,11,-5)
-hist(x, breaks = 10) # breaks = bins = classes
+hist(x, breaks = 10)           # breaks = bins = classes
 ```
 
 #### Median
@@ -77,6 +161,14 @@ median(data$variable, na.rm = TRUE)
 ```
 
 #### Mean
+
+The arithmetic mean is:
+
+$$
+\bar{x} = \frac{\sum x_i}{n}
+$$
+
+where $\bar{x}$ is the sample mean, $x_i$ represents each observation, and $n$ is the number of observations.
 
 ```{r}
 (56 + 31 + 56 + 8 + 32) / 5
@@ -94,29 +186,47 @@ mean(x, na.rm = TRUE)
 
 #### Weighted Mean
 
+The weighted mean is:
+
+$$
+\bar{x}_w = \frac{\sum w_i x_i}{\sum w_i}
+$$
+
+where $x_i$ is each observation and $w_i$ is its corresponding weight.
+
 ```{r}
+# Weighted Mean
 x <- c(24, 41, 58, 75, 92) # observations
-w <- c(2, 8, 15, 8, 11)  # weights
+w <- c(2, 8, 15, 8, 11)    # weights
 
 sum(x * w) / sum(w)
 ```
 
 ```{r}
+# Weighted Mean Function
 x <- c(24, 41, 58, 75, 92) # observations
-w <- c(2, 8, 15, 8, 11)  # weights
+w <- c(2, 8, 15, 8, 11)    # weights
 
 weighted.mean(x, w, na.rm = TRUE)
 ```
 
+The weighted sample variance is:
+
+$$
+s^2 = \frac{\sum w_i(x_i-\bar{x}_w)^2}{n-1}
+$$
+
+where $n = \sum w_i$.
+
 ```{r}
 # variance, calculate after calculating the mean
 x <- c(24, 41, 58, 75, 92) # observations
-w <- c(2, 8, 15, 8, 11)  # weights
+w <- c(2, 8, 15, 8, 11)    # weights
 
 n <- sum(w)
 
-xbar <- sum(x * w) / n
-s2   <- sum(w * (x - xbar)^2) / (n - 1)
+xbar <- sum(x * w) / n                   # weighted mean
+s2   <- sum(w * (x - xbar)^2) / (n - 1)  # sample, weighted variance
 
 xbar
 s2
@@ -133,52 +243,128 @@ mean(x, trim = .2)
 
 #### Range
 
+The range is:
+
+$$
+\text{Range} = x_{\max} - x_{\min}
+$$
+
 ```{r}
 x <- c(30, 20, 10, 50, 100)
 
 max_mass <- max(x, na.rm = TRUE)
 min_mass <- min(x, na.rm = TRUE)
 
-max_mass
-min_mass
+max_mass - min_mass
 ```
 
 ```{r}
 range(data$variable, na.rm = TRUE)
+range(x)
+# Then max - min
 ```
 
 #### Variance
 
+For a population:
+
+$$
+\sigma^2 = \frac{\sum (x_i-\mu)^2}{N}
+$$
+
+where $\mu$ is the population mean and $N$ is the population size.
+
 ```{r}
+# Population Variance
 x <- c(24, 41, 58, 75, 92)
 
 xbar <- mean(x)
-variance <- sum((x - xbar)^2) / (length(x) - 1)
 
+variance <- sum((x - xbar)^2) / (length(x)) # use n
 variance
+```
+
+For a sample:
+
+$$
+s^2 = \frac{\sum (x_i-\bar{x})^2}{n-1}
+$$
+
+where $\bar{x}$ is the sample mean and $n$ is the sample size.
+
+```{r}
+# Sample Variance
+x <- c(24, 41, 58, 75, 92)
+
+xbar <- mean(x)
+
+variance <- sum((x - xbar)^2) / (length(x) - 1) # use n - 1
+variance
+```
+
+```{r}
+# Sample Variance Function
+var(x)
 ```
 
 #### MAD
 
 ```{r}
-
+# Not tested.
 ```
 
 #### Standard Deviation
 
+Standard deviation is the square root of variance:
+
+$$
+s = \sqrt{s^2}
+$$
+
+For a population:
+
+$$
+\sigma = \sqrt{\frac{\sum (x_i-\mu)^2}{N}}
+$$
+
 ```{r}
+# Population Standard Deviation
 x <- c(600, 470, 170, 430, 300)
 
 xbar <- mean(x)
 variance <- sum((x - xbar)^2) / length(x)
 SD <- sqrt(variance)
-
 SD
+```
+
+```{r}
+# Sample Standard Deviation
+x <- c(600, 470, 170, 430, 300)
+
+xbar <- mean(x)
+variance <- sum((x - xbar)^2) / (length(x) - 1)
+SD <- sqrt(variance)
+SD
+```
+
+```{r}
+# Sample Standard Deviation Function
+x <- c(600, 470, 170, 430, 300)
+
+sd(x)
 ```
 
 ## Relative Positioning
 
 #### z-scores
+
+The z-score is:
+
+$$
+z = \frac{x-\mu}{\sigma}
+$$
+
+where $x$ is the observed value, $\mu$ is the mean, and $\sigma$ is the standard deviation.
 
 ```{r}
 score <- 46.9
@@ -192,17 +378,12 @@ zscore
 #### Percentiles
 
 ```{r}
-summary(data)
-```
+x <- c(6.1, 9.1, 9.5, 6, 8.6, 6.2, 9.1, 6.1, 8, 5.7, 6.5)
 
-```{r}
-x <- c(6.1, 9.1, 9.5, 6, 8.6, 6.2, 9.1, 6.1, 8, 5.7, 6.5, 6.4, 5.8, 9.3, 6.2
-)
-
+# One at a time
 quantile(x, .28)
-```
 
-```{r}
+# Several at once
 quantile(duration, c(.32, .57, .98))
 ```
 
@@ -244,6 +425,12 @@ quantile(x, c(
 
 #### IQR
 
+The interquartile range is:
+
+$$
+IQR = Q_3 - Q_1
+$$
+
 ```{r}
 # See calculations of quartiles above or manually set
 q1 <- 205
@@ -266,6 +453,16 @@ IQR(data, type = 2)
 
 #### Covariance
 
+The sample covariance is:
+
+$$
+s_{xy}
+=
+\frac{\sum (x_i-\bar{x})(y_i-\bar{y})}{n-1}
+$$
+
+A positive covariance indicates that the variables tend to move in the same direction, while a negative covariance indicates that they tend to move in opposite directions.
+
 ```{r}
 x <- c(0.5, 1, 1.5, 2, 3, 3.5, 4, 4.5, 5.5, 6)
 y <- c(63,	66,	69,	72,	78,	81,	84,	87,	90,	96)
@@ -287,18 +484,34 @@ covariance
 ```
 
 ```{r}
-# cov(x = data$x, y = data$y)
+# using data
+cov(x = data$x, y = data$y)
+
+# using vectors
+cov(x, y)
 ```
 
 #### Correlation Coefficient
 
-```{r}
-# REQUIRED: Update the covariance section above AND run it ! 
-r <- covariance / (xSD * ySD)
+The correlation coefficient can be calculated from the covariance and standard deviations:
 
+$$
+r = \frac{s_{xy}}{s_xs_y}
+$$
+
+where $s_{xy}$ is the sample covariance and $s_x$ and $s_y$ are the sample standard deviations.
+
+```{r}
+# REQUIRED: Use the covariance section above AND run it !
+# Then, calculate r
+r <- covariance / (xSD * ySD)
 r
 ```
 
 ```{r}
+# using data
 cor(x = data$x, y = data$y)
+
+# using vectors
+cor(x, y)
 ```
