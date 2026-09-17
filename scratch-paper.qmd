@@ -7,7 +7,7 @@ format:
     toc: true
     toc-location: left
     toc-title: "Questions"
-    toc-depth: 1
+    toc-depth: 2
     css: styles.css
 engine: knitr
 filters: 
