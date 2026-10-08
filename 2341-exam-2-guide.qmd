@@ -1,14 +1,17 @@
 ---
 title: "Exam 2 Review"
-format: html
+format: 
+  html: 
+    toc: true
+    toc-location: left
+    toc-title: "Topics"
+    toc-depth: 4
+    css: styles.css
+engine: knitr
 execute:
   eval: false
   warning: false
   message: false
-format: 
-  html:
-    toc: true
-    toc-depth: 3
 ---
 
 ## Additional helpful functions
