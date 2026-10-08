@@ -1,17 +1,17 @@
 :root {
-  --quarto-sidebar-width: 140px;
+  --quarto-sidebar-width: 160px;
 }
 
 .sidebar,
 #quarto-sidebar {
-  width: 140px !important;
-  min-width: 140px !important;
+  width: 160px !important;
+  min-width: 160px !important;
 }
 
 .sidebar-menu-container {
-  width: 140px !important;
+  width: 160px !important;
 }
 
 body.sidebar-navigation {
-  grid-template-columns: 140px minmax(0, 1fr) !important;
+  grid-template-columns: 160px minmax(0, 1fr) !important;
 }
