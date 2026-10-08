@@ -22,9 +22,9 @@ Enter your final answer in Hawkes Learning in the exam. This page does ***not***
 
 *Similar* functions available:
 
--   janitor::round_half_up(value, digit): rounds numbers to specified digits using classic rounding technique
+-   round_half_up(value, digit): rounds numbers to specified digits using classic rounding technique
 
--   descr::freq(vector): creates frequency table
+-   fraction(): presents calculation as a fraction
 
 ```{webr-r}
 #| context: setup
@@ -37,62 +37,120 @@ round_half_up <- function(x, digits = 0) {
   sign(x) * floor(abs(x) * multiplier + 0.5) / multiplier
 }
 
-# descr:freq() -----------------------------------------------------
-freq <- function(x, w = NULL, useNA = "no", digits = 2) {
+# # descr:freq() -----------------------------------------------------
+# freq <- function(x, w = NULL, useNA = "no", digits = 2) {
+#   
+#   # If no weights are supplied, use a weight of 1 for each observation
+#   if (is.null(w)) {
+#     w <- rep(1, length(x))
+#   }
+#   
+#   # Basic checks
+#   if (length(x) != length(w)) {
+#     stop("x and w must have the same length.")
+#   }
+#   
+#   if (!is.numeric(w)) {
+#     stop("w must be numeric.")
+#   }
+#   
+#   # Handle missing values
+#   if (useNA == "no") {
+#     keep <- !is.na(x) & !is.na(w)
+#     x <- x[keep]
+#     w <- w[keep]
+#   }
+#   
+#   # Weighted frequencies
+#   values <- unique(x)
+#   
+#   frequency <- sapply(values, function(v) {
+#     sum(w[x == v], na.rm = TRUE)
+#   })
+#   
+#   # Sort values in a sensible order
+#   ord <- order(values)
+#   values <- values[ord]
+#   frequency <- frequency[ord]
+#   
+#   percent <- frequency / sum(frequency) * 100
+#   
+#   result <- data.frame(
+#     Value = values,
+#     Frequency = frequency,
+#     Percent = round_half_up(percent, digits),
+#     Cumulative_Frequency = cumsum(frequency),
+#     Cumulative_Percent = round_half_up(cumsum(percent), digits),
+#     row.names = NULL
+#   )
+#   
+#   total <- data.frame(
+#     Value = "Total",
+#     Frequency = sum(frequency),
+#     Percent = 100,
+#     Cumulative_Frequency = NA,
+#     Cumulative_Percent = NA
+#   )
+#   
+#   rbind(result, total)
+# }
+
+# MASS::fractions -----------------------------------------------------
+fractions <- function(x, max_denominator = 2000, tolerance = 1e-7) {
   
-  # If no weights are supplied, use a weight of 1 for each observation
-  if (is.null(w)) {
-    w <- rep(1, length(x))
+  convert_fraction <- function(value) {
+    
+    # Handle missing or non-finite values
+    if (is.na(value)) return(NA_character_)
+    if (is.infinite(value)) return(as.character(value))
+    
+    # Handle whole numbers
+    if (abs(value - round(value)) < tolerance) {
+      return(as.character(round(value)))
+    }
+    
+    # Keep track of negative values
+    sign <- ifelse(value < 0, "-", "")
+    value <- abs(value)
+    
+    # Find the closest fraction
+    denominators <- 1:max_denominator
+    numerators <- round(value * denominators)
+    
+    errors <- abs(value - numerators / denominators)
+    
+    best <- which.min(errors)
+    
+    numerator <- numerators[best]
+    denominator <- denominators[best]
+    
+    # Reduce the fraction
+    gcd <- function(a, b) {
+      while (b != 0) {
+        temp <- b
+        b <- a %% b
+        a <- temp
+      }
+      a
+    }
+    
+    divisor <- gcd(numerator, denominator)
+    
+    numerator <- numerator / divisor
+    denominator <- denominator / divisor
+    
+    paste0(sign, numerator, "/", denominator)
   }
   
-  # Basic checks
-  if (length(x) != length(w)) {
-    stop("x and w must have the same length.")
+  result <- vapply(x, convert_fraction, character(1))
+  
+  # Preserve dimensions for matrices/arrays
+  if (!is.null(dim(x))) {
+    dim(result) <- dim(x)
+    dimnames(result) <- dimnames(x)
   }
   
-  if (!is.numeric(w)) {
-    stop("w must be numeric.")
-  }
-  
-  # Handle missing values
-  if (useNA == "no") {
-    keep <- !is.na(x) & !is.na(w)
-    x <- x[keep]
-    w <- w[keep]
-  }
-  
-  # Weighted frequencies
-  values <- unique(x)
-  
-  frequency <- sapply(values, function(v) {
-    sum(w[x == v], na.rm = TRUE)
-  })
-  
-  # Sort values in a sensible order
-  ord <- order(values)
-  values <- values[ord]
-  frequency <- frequency[ord]
-  
-  percent <- frequency / sum(frequency) * 100
-  
-  result <- data.frame(
-    Value = values,
-    Frequency = frequency,
-    Percent = round_half_up(percent, digits),
-    Cumulative_Frequency = cumsum(frequency),
-    Cumulative_Percent = round_half_up(cumsum(percent), digits),
-    row.names = NULL
-  )
-  
-  total <- data.frame(
-    Value = "Total",
-    Frequency = sum(frequency),
-    Percent = 100,
-    Cumulative_Frequency = NA,
-    Cumulative_Percent = NA
-  )
-  
-  rbind(result, total)
+  result
 }
 ```
 

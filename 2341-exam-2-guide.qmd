@@ -5,6 +5,10 @@ execute:
   eval: false
   warning: false
   message: false
+format: 
+  html:
+    toc: true
+    toc-depth: 3
 ---
 
 ## Additional helpful functions
@@ -13,28 +17,108 @@ execute:
 
 -   `MASS::fractions(calculation)`
 
-| Problem                 | Phrase                          |
-|-------------------------|---------------------------------|
-| Sample space            | list all outcomes               |
-| Basic probability       | favorable / total               |
-| Mutually exclusive      | Check overlap                   |
-| Conditional probability | "given that..."                 |
-| Multiplication rule     | independent events              |
-| Dependent events        | without replacement             |
-| Combinations            | selecting groups                |
-| Complement rule         | "at least... "                  |
-| Expected value          | gains/losses with probabilities |
-| Binomial                | fixed trials, two outcomes      |
-| Poisson                 | count of events in an interval  |
+### Using R
 
-## Probability
+| Task                         | R code    | Example                       |
+|------------------------------|-----------|-------------------------------|
+| Save a value                 | `<-`      | `n <- 10`                     |
+| Create a vector              | `c()`     | `x <- c(10, 20, 30)`          |
+| Create consecutive intergers | `:`       | `0:5`                         |
+| Sort values                  | `sort()`  | `sort(x)`                     |
+| Addition / Subtraction       | `+` `-`   | `10 + 5` → `15``10 - 5` → `5` |
+| Multiplication / Division    | `*` `/`   | `10 * 5` → `50``10 / 5` → `2` |
+| Exponent / power             | `^`       | `4^2` → `16`                  |
+| Square root                  | `sqrt()`  | `sqrt(25)` → `5`              |
+| Absolute value               | `abs()`   | `abs(-4)` → `4`               |
+| Grouping with Parentheses    | `()`      | `(10 + 5) / 3` → `5`          |
+
+R requires `*` for multiplication, e.g., write `n * p` for $np$.
+
+### Basic Functions in R
+
++--------------------+-------------------+------------------------------------------------+
+| Calculation        | R code            | Example                                        |
++====================+===================+================================================+
+| Sum                | `sum()`           | `sum(c(2, 4, 6))` → `12`                       |
++--------------------+-------------------+------------------------------------------------+
+| Mean               | `mean()`          | `mean(c(2, 4, 6))` → `4`                       |
++--------------------+-------------------+------------------------------------------------+
+| Median             | `median()`        | `median(c(2, 4, 9))` → `4`                     |
++--------------------+-------------------+------------------------------------------------+
+| Min / Max          | `min()` `max()`   | `min(c(2, 4, 6))` → `2``max(c(2, 4, 6))` → `6` |
++--------------------+-------------------+------------------------------------------------+
+| Variance           | `var()`           | `var(c(2, 4, 6))`                              |
++--------------------+-------------------+------------------------------------------------+
+| Standard deviation | `sd()`            | `sd(c(2, 4, 6))`                               |
++--------------------+-------------------+------------------------------------------------+
+| Number of values   | `length()`        | `length(c(2, 4, 6))` → `3`                     |
++--------------------+-------------------+------------------------------------------------+
+| Round a result     | `round_half_up()` | `round_half_up(3.141, 2)` → `3.14`             |
++--------------------+-------------------+------------------------------------------------+
+| Fraction           | `fractions()`     | `fractions(0.5)` → `1/2`                       |
++--------------------+-------------------+------------------------------------------------+
+| Factorial          | `factorial()`     | `factorial(5)`                                 |
++--------------------+-------------------+------------------------------------------------+
+| Combinations       | `choose()`        | `choose(5, 2)`                                 |
++--------------------+-------------------+------------------------------------------------+
+| Summary statistics | `summary()`       | `summary(x)summary(data)`                      |
++--------------------+-------------------+------------------------------------------------+
+
+## Recognizing the problem
+
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Clue in the problem                                                            | What to consider                                         |
++================================================================================+==========================================================+
+| List all possible outcomes                                                     | Sample space                                             |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Favorable outcomes out of equally likely outcomes                              | Basic probability                                        |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| A or B, or both                                                                | Union / addition rule                                    |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| A and B                                                                        | Intersection / multiplication rule                       |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Given that B occurred                                                          | Conditional probability                                  |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Events cannot occur together                                                   | Mutually exclusive events                                |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| One event does not change the other's probability                              | Independent events                                       |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Selecting a group; order does not matter                                       | Combinations                                             |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Without replacement from a finite population                                   | Dependent draws; hypergeometric for a count of successes |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| At least one                                                                   | Often easiest using the complement of zero               |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Values with their probabilities                                                | Discrete random variable; weighted mean and variance     |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| All listed values are equally likely                                           | Discrete uniform                                         |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Fixed number of independent trials, two outcomes, constant success probability | Binomial                                                 |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Count of events in a time, space, or other interval at a constant average rate | Poisson                                                  |
++--------------------------------------------------------------------------------+----------------------------------------------------------+
+
+## Probability rules
+
+The **sample space** is the set of all possible outcomes. An **event** is a subset of those outcomes.
+
+### Basic Probability
+
+When individual outcomes are **equally likely**:
 
 $$
 P(A) = \frac{\text{number of favorable outcomes}}{\text{total number of outcomes}}
 $$
 
 ```{r}
+x / y
+```
 
+```{r}
+favorable <- 3
+total     <- 6
+
+favorable / total
 ```
 
 ### Unions (A or B)
@@ -43,18 +127,34 @@ $$
 P(A \cup B) = P(A) + P(B) - P(A \cap B)
 $$
 
-```{r}
+Subtract the overlap because it is counted in both $P(A)$ and $P(B)$. For mutually exclusive events, the overlap is zero.
 
+```{r}
+total  <- NA
+n_A    <- NA
+n_B    <- NA
+n_both <- NA
+
+(n_A + n_B - n_both) / total  
 ```
 
 ### Conditional Probability (A given B)
 
 $$
-P(A \mid B) = \frac{P(A \cap B)}{P(B)}
+P(A\mid B)=\frac{P(A\cap B)}{P(B)},\qquad P(B)>0.
 $$
 
-```{r}
+The condition changes the reference group to the outcomes in $B$.
 
+The denominator is the count or probability for the event after the words **given that**. In general, $P(A\mid B)$ and $P(B\mid A)$ can differ.
+
+Using counts from the same group, divide the number in both events by the number in the conditioning event.
+
+```{r}
+n_both <- 6
+n_B    <- 14
+
+n_both / n_B
 ```
 
 ### Intersections (A and B)
@@ -66,17 +166,23 @@ P(A \cap B) = P (A\;and\;B) = P(A) \times P(B)
 $$
 
 ```{r}
+p_A <- 1 / 2
+p_B <- 1 / 6
 
+p_A * p_B
 ```
 
-#### Dependent (Multiplication Rule)
+#### Dependent (General Multiplication Rule)
 
 $$
 P(A \cap B) = P (A\;and\;B)= P(A) \times P(B \vert A)
 $$
 
 ```{r}
+p_A  <- 5 / 8
+p_BA <- 4 / 7
 
+p_A * p_BA
 ```
 
 ### Complement
@@ -86,19 +192,30 @@ P(A^c)= P (not\;A) = 1 - P(A)
 $$
 
 ```{r}
+p_A <- NA
 
+1 - p_A
 ```
 
 ## Discrete Random Variable
 
+List each possible numerical value with its probability. Probabilities must be between 0 and 1 and sum to 1.
+
 #### Expected Value
+
+The expected value is the long-run average over many repetitions. It does not have to be a possible value of $X$.
 
 $$
 E(X) = \sum_{i} x_i \, P(X = x_i)
 $$
 
 ```{r}
+# Possible values and their matching probabilities
+x    <- c(   0,    1,    2)
+prob <- c(0.20, 0.50, 0.30)
 
+mu <- sum(x * prob)
+mu
 ```
 
 #### Variance and Standard Deviation
@@ -108,17 +225,23 @@ $$
 $$
 
 ```{r}
+variance <- sum((x - mu)^2 * prob)
+variance
 
+standard_deviation <- sqrt(variance)
+standard_deviation
 ```
 
-## Discrete Uniform Distribution
+## Uniform Distribution
+
+Use a discrete uniform distribution when each listed outcome is equally likely.
 
 $$
  P(X = x) = \frac{1}{n}
 $$
 
 ```{r}
-
+1 / n
 ```
 
 #### Expected Value
@@ -128,10 +251,40 @@ E(X) = \frac{\text{first value} + \text{last value}}{2}
 $$
 
 ```{r}
+(first +  last) / 2
+```
 
+### Variance
+
+$$
+ \operatorname{Var}(X)=\sigma^2=\frac{n^2-1}{12}
+$$
+
+```{r}
+(n^2 - 1) / 12
+```
+
+## Factorials and Combinations
+
+A factorial multiplies the positive integers up to $n$:
+
+$$ n!=n(n-1)\cdots2(1),\qquad 0!=1. $$
+
+When selecting $r$ objects from $n$ distinct objects **without regard to order**:
+
+$$ \binom{n}{r}=\frac{n!}{r!(n-r)!}. $$
+
+```{r}
+factorial(n)
+```
+
+```{r}
+choose(n, r)
 ```
 
 ## Binomial Distribution
+
+Counts successes in $n$ trials: a fixed number of trials, two outcomes per trial, independent trials, and a constant success probability $p$. “Success” is the outcome being counted.
 
 $$
  P(X = x) = \binom{n}{x} p^x (1-p)^{n-x}
@@ -152,14 +305,26 @@ $$
 | at least x     | $P(X \ge x)$      | `1 - pbinom(x-1)` |
 +----------------+-------------------+-------------------+
 
-| Argument | Equation | Meaning                             |
-|----------|----------|-------------------------------------|
-| `x`      | $x$      | number of successes                 |
-| `size`   | $n$      | number of trials                    |
-| `prob`   | $p$      | probabiity of success on each trial |
+| Argument | Equation | Meaning                              |
+|----------|----------|--------------------------------------|
+| `x`      | $x$      | number of successes                  |
+| `size`   | $n$      | number of trials                     |
+| `prob`   | $p$      | probability of success on each trial |
 
 ```{r}
+dbinom(
+  x    = NA, 
+  size = NA,
+  prob = NA
+)
+```
 
+```{r}
+pbinom(
+  q    = NA, 
+  size = NA,
+  prob = NA
+)
 ```
 
 #### Expected Value
@@ -169,7 +334,7 @@ E(X) = np
 $$
 
 ```{r}
-
+n * p
 ```
 
 #### Variance and Standard Deviation
@@ -179,29 +344,54 @@ Var(X) = np(1-p)\\SD(X) = \sqrt{np(1-p)}
 $$
 
 ```{r}
+n * p * (1 - p)
+```
 
+```{r}
+sqrt(n * p * (1 - p))
 ```
 
 ## Poisson Distribution
+
+Counts events in a fixed interval of time, length, area, or volume.
 
 $$
 P(X = x) = \frac{e^{-\lambda}\lambda^x}{x!}, \quad x = 0,1,2,\ldots
 $$
 
-+----------------+-------------------+------------------+
-| Wording        | Mathematical Form | R Function       |
-+================+===================+==================+
-| exactly x      | $P(X=x)$          | `dpois()`        |
-+----------------+-------------------+------------------+
-| at most x\     | $P(X\le x)$       | `ppois()`        |
-| no more than x |                   |                  |
-+----------------+-------------------+------------------+
-| less than x    | $P(X \lt x)$      | `ppois(x-1)`     |
-+----------------+-------------------+------------------+
-| more than x    | $P(X \gt x)$      | `1 - ppois(x)`   |
-+----------------+-------------------+------------------+
-| at least x     | $P(X \ge x)$      | `1 - ppois(x-1)` |
-+----------------+-------------------+------------------+
+where
+
+-   $e \approx 2.71828$ \
+    In R, we can use `exp(-lambda)`
+
+-   $\lambda$ (lambda; Greek) = mean number of occurrences for the specified interval
+
+-   $x$ = number of events
+
+-   $x!$ (factorial) = means multiply all whole numbers from $x$ down to 1\
+    $x! = x \times (x - 1) ... \times 1$\
+    In R, we will use `factorial(a)`
+
+For a Poisson distribution:
+
+$$ \mu = \sigma^2 = \lambda $$
+
+The mean equals the variance which equals $\lambda$. So, $\lambda$ controls **both** the **center** and **spread** of the distribution.
+
++----------------+-------------------+--------------------------+
+| Wording        | Mathematical Form | R Function               |
++================+===================+==========================+
+| exactly x      | $P(X=x)$          | `dpois(x, lambda)`       |
++----------------+-------------------+--------------------------+
+| at most x\     | $P(X\le x)$       | `ppois(x, lambda)`       |
+| no more than x |                   |                          |
++----------------+-------------------+--------------------------+
+| less than x    | $P(X \lt x)$      | `ppois(x-1, lambda)`     |
++----------------+-------------------+--------------------------+
+| more than x    | $P(X \gt x)$      | `1 - ppois(x, lambda)`   |
++----------------+-------------------+--------------------------+
+| at least x     | $P(X \ge x)$      | `1 - ppois(x-1, lambda)` |
++----------------+-------------------+--------------------------+
 
 | Argument | Equation  | Meaning |
 |----------|-----------|---------|
@@ -209,14 +399,40 @@ $$
 | `lambda` | $\lambda$ | lambda  |
 
 ```{r}
+(exp(-lambda) * lambda^x) / factorial(x)
+```
 
+```{r}
+dpois(
+  x      = NA,
+  lambda = NA
+)
+```
+
+```{r}
+ppois(
+  q      = NA,
+  lambda = NA
+)
 ```
 
 ## Hypergeometric Distribution
 
+Counts successes in a random sample drawn **without replacement** from a finite population with known successes and failures. Every sample of the given size is equally likely.
+
 $$
 P(X = x) = \frac{\binom{k}{x}\binom{N-k}{\,n-x\,}}{\binom{N}{n}}
 $$
+
+where
+
+-   $k$ = the total number of successes possible in the population
+
+-   $N$ = the size of the total population
+
+-   $n$ = the size of the sample drawn
+
+-   $x$ = the number of successes in the sample of size $n$
 
 +----------------+-------------------+-------------------+
 | Wording        | Mathematical Form | R Function        |
@@ -241,17 +457,49 @@ $$
 | `k`      | $n$      | sample size             |
 
 ```{r}
-
+choose(K, x) * choose(N - K, sample_size - x) /
+  choose(N, sample_size)
 ```
 
-#### Expected Value and Variance
+```{r}
+dhyper(
+  x = NA, # number of successes in sample
+  m = NA, # number of successes in population
+  n = NA, # number of failures in population
+  k = NA  # sample size
+)
+```
+
+```{r}
+phyper(
+  q = NA, # number of successes in sample
+  m = NA, # number of successes in population
+  n = NA, # number of failures in population
+  k = NA  # sample size
+)
+```
+
+#### Expected Value
+
+The expected value tells us the average number of successes we would expect if we repeated this sampling process many times.
 
 $$
 E(X) = n \cdot \frac{k}{N}
 $$
 
 ```{r}
+n * (k / N)
+```
 
+```{r}
+population_size <- 15
+successes_pop   <- 4
+sample_size     <- 2
+
+expected_value <- sample_size *
+  (successes_pop / population_size)
+
+expected_value
 ```
 
 #### Variance
@@ -261,5 +509,23 @@ $$
 $$
 
 ```{r}
+sample_size *
+  (successes_pop / population_size) *
+  (1 - successes_pop / population_size) *
+  ((population_size - sample_size) /
+     (population_size - 1))
+```
 
+```{r}
+population_size <- NA
+successes_pop   <- NA
+sample_size     <- NA
+
+variance <- sample_size *
+  (successes_pop / population_size) *
+  (1 - successes_pop / population_size) *
+  ((population_size - sample_size) /
+     (population_size - 1))
+
+variance
 ```
