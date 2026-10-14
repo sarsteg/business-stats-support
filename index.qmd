@@ -29,4 +29,6 @@ Select the study guide for your course and exam.
 
 [**Exam 1 Study Guide**](3341-exam-1-guide.qmd){.btn .btn-info .btn-lg}
 
+[**Exam 2 Study Guide**](3341-exam-2-guide.qmd){.btn .btn-info .btn-lg}
+
 More study guides will be added as they become available.

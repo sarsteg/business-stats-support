@@ -1,0 +1,745 @@
+---
+title: "Exam 2 Study Guide"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-copy: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Overview
+
+### Common R Functions and Critical Values
+
+| Need | R function or example |
+|----------------------------|----------------------------------------|
+| Mean, sample standard deviation, sample variance | `mean(x)`, `sd(x)`, `var(x)` |
+| Sample size and square root | `length(x)`, `sqrt(x)` |
+| Normal critical value | `qnorm(0.975)` |
+| Tukey studentized-range critical value | `qtukey(0.95, nmeans=4, df=20)` |
+| Fisher LSD from raw data and a fitted ANOVA | `agricolae::LSD.test()` (requires the `agricolae` package) |
+
+### Step 1. Choose the Distribution
+
+The statistical procedure determines which distribution to use. Use the **same distribution and degrees of freedom** when finding a critical value or a p-value for that test.
+
+| Statistical procedure | Distribution | Critical value function | P-value function |
+|------------------|------------------|------------------|------------------|
+| Two-proportion test; two independent means with **known** population standard deviations | Standard normal ($z$) | `qnorm()` | `pnorm()` |
+| Paired differences; two independent means with **unknown** population standard deviations; Fisher's LSD | $t$ | `qt()` | `pt()` |
+| Comparing two population variances; one-way or two-way ANOVA | $F$ | `qf()` | `pf()` |
+| Tukey multiple comparisons | Studentized range | `qtukey()` | `ptukey()` |
+
+**How to read the function names:** Functions beginning with `q` return a **critical value** (a cutoff on the horizontal axis) when you provide a probability. Functions beginning with `p` return a **probability** (area under the curve) when you provide a calculated test statistic. By default, R uses the area **to the left** of the input. `lower.tail=FALSE` requests the area **to the right**.
+
+### Step 2. Identify the Test Direction
+
+The alternative hypothesis determines the tail. Interpret the sign relative to how you defined Population 1, Population 2, or the paired difference.
+
+| Wording of the alternative hypothesis | Test direction | Area for a p-value | Rejection region |
+|------------------|------------------|------------------|------------------|
+| Less than ($<$) | Left-tailed | Left of the observed statistic | Statistic below the lower critical value |
+| Greater than ($>$) | Right-tailed | Right of the observed statistic | Statistic above the upper critical value |
+| Different ($\ne$) | Two-tailed | Both tails | Statistic beyond either critical value |
+
+**Exception to remember:** ANOVA $F$ tests are always **right-tailed**, even though the alternative states that means *differ*. For an $F$ test comparing **two population variances**, the alternative can be left-, right-, or two-tailed.
+
+### Step 3. Find the Critical Value
+
+Use the significance level `alpha` and the relevant degrees of freedom. For a **two-tailed** $z$ or $t$ test, split `alpha` equally between the two tails.
+
+| Test direction               | Standard normal ($z$) | $t$ distribution    |
+|------------------------------|-----------------------|---------------------|
+| Left-tailed                  | `qnorm(alpha)`        | `qt(alpha, df)`     |
+| Right-tailed                 | `qnorm(1-alpha)`      | `qt(1-alpha, df)`   |
+| Two-tailed: **lower** cutoff | `qnorm(alpha/2)`      | `qt(alpha/2, df)`   |
+| Two-tailed: **upper** cutoff | `qnorm(1-alpha/2)`    | `qt(1-alpha/2, df)` |
+
+For $F$ procedures, use the numerator and denominator degrees of freedom **in the same order as the F statistic**:
+
+| $F$ procedure | Critical value calculation |
+|------------------------------------|------------------------------------|
+| Compare variances: left-tailed | `qf(alpha, df1, df2)` |
+| Compare variances: right-tailed | `qf(1-alpha, df1, df2)` |
+| Compare variances: two-tailed **lower** cutoff | `qf(alpha/2, df1, df2)` |
+| Compare variances: two-tailed **upper** cutoff | `qf(1-alpha/2, df1, df2)` |
+| ANOVA: right-tailed | `qf(1-alpha, df_effect, df_error)` |
+
+For **Tukey HSD**, use `qtukey(1-alpha, nmeans=k, df=df_error)` to find the studentized-range critical value for the set of group comparisons. Fisher's LSD uses a two-tailed $t$ cutoff: `qt(1-alpha/2, df_error)`.
+
+**Example of interpreting `alpha`:** At `alpha <- 0.05`, a right-tailed test puts 0.05 in the right tail (`1-alpha = 0.95` is to the left). A two-tailed test puts 0.025 in each tail (`alpha/2 = 0.025`).
+
+### Step 4. Calculate the P-value
+
+After calculating your test statistic, choose the same distribution and tail as the hypothesis test.
+
+| Test direction | Normal ($z$) | $t$ |
+|------------------------|------------------------|------------------------|
+| Left-tailed | `pnorm(z_stat)` | `pt(t_stat, df)` |
+| Right-tailed | `pnorm(z_stat, lower.tail=FALSE)` | `pt(t_stat, df, lower.tail=FALSE)` |
+| Two-tailed | `2*pnorm(-abs(z_stat))` | `2*pt(-abs(t_stat), df)` |
+
+| $F$ procedure and direction | P-value calculation |
+|------------------------------------|------------------------------------|
+| Compare variances: left-tailed | `pf(F_stat, df1, df2)` |
+| Compare variances: right-tailed | `pf(F_stat, df1, df2, lower.tail=FALSE)` |
+| Compare variances: two-tailed | `min(1, 2*min(pf(F_stat,df1,df2), pf(F_stat,df1,df2,lower.tail=FALSE)))` |
+| ANOVA: right-tailed | `pf(F_stat, df_effect, df_error, lower.tail=FALSE)` |
+
+The two-tailed variance-test calculation doubles the *smaller* tail probability. The $F$ distribution is asymmetric, so do not use the normal or $t$ two-tailed shortcut with an $F$ statistic. In a Tukey analysis, `TukeyHSD(fitted_model)` reports adjusted pairwise p-values when a suitable raw-data model is available.
+
+### Step 5. Make the Decision
+
+| Comparison | Decision |
+|------------------------------------|------------------------------------|
+| `p_value <= alpha` | Reject $H_0$; sufficient evidence for the alternative hypothesis |
+| `p_value > alpha` | Fail to reject $H_0$; insufficient evidence for the alternative hypothesis |
+
+A corresponding **two-sided confidence interval** excludes the null value when the test rejects at the matching significance level. The null value is **0** for a mean or proportion difference and **1** for a population variance ratio.
+
+**Quick check:** For an $F$ test comparing variances, $F=s_1^2/s_2^2$. For an ANOVA $F$ test, $F=MS_{\text{effect}}/MSE$. Keep full precision until the final answer unless the problem explicitly requires using a rounded intermediate result.
+
+## 1. Paired Difference Test
+
+Use when observations **belong together**, such as before/after values on the same people. Define the difference in the order requested. After that, work with **one sample of differences**.
+
+### Formulas
+
+Where $n$ is the number of pairs:
+
+$$d_i=x_{1i}-x_{2i},\qquad \bar d=\frac{\sum d_i}{n},\qquad s_d=\sqrt{\frac{\sum(d_i-\bar d)^2}{n-1}}$$
+
+$$SE=\frac{s_d}{\sqrt n},\qquad t=\frac{\bar d-\mu_{d,0}}{SE},\qquad df=n-1$$
+
+$$\text{Confidence interval: }\bar d\pm t_{1-\alpha/2,\,n-1}\,SE$$
+
+### Common Questions and How to Approach Them
+
+| If the problem asks... | What to do | R code |
+|-----------------------|-------------------------|-------------------------|
+| Is this a paired difference design? | Determine whether each observation has a corresponding observation in the other condition. | No calculation needed |
+| What are the paired differences? | Subtract the two measurements within each pair, keeping the order consistent. | `d <- x1 - x2` |
+| What is the mean difference? | Find the average of the differences. | `mean(d)` |
+| What is the standard deviation of the differences? | Calculate the sample standard deviation of the differences. | `sd(d)` |
+| What are the degrees of freedom? | Subtract 1 from the number of pairs. | `length(d) - 1` |
+| What is the critical t value? | Use the confidence level or significance level and the degrees of freedom. | `qt(1 - alpha/2, df)` |
+| What is the confidence interval? | Calculate the mean difference plus or minus the margin of error. | `mean(d) + c(-1, 1) * qt(1-alpha/2, df) * sd(d)/sqrt(length(d))` |
+| What is the test statistic? | Divide the difference between the observed and hypothesized mean difference by the standard error. | `(mean(d) - 0) / (sd(d)/sqrt(length(d)))` |
+| What is the p-value? | Use `pt()` with the correct tail. | `pt(t_stat, df)` for a left-tailed test |
+| What is the conclusion? | Compare the p-value with the significance level. | Reject H0 if `p_value <= alpha` |
+
+**Remember:** The order of subtraction determines the meaning of a positive or negative difference. For a paired test, the standard deviation is calculated from the differences.
+
+### Choosing the Correct Hypothesis
+
+| Wording of the question     | Alternative hypothesis | Test direction |
+|-----------------------------|------------------------|----------------|
+| Has increased               | $H_a:\mu_d>0$          | Right-tailed   |
+| Has decreased               | $H_a:\mu_d<0$          | Left-tailed    |
+| Has changed or is different | $H_a:\mu_d\ne0$        | Two-tailed     |
+
+These directions assume that the paired differences are defined as the measurement of interest minus its comparison measurement.
+
+### Example: Paired Before-and-After Measurements
+
+-   **before/after scores.** Suppose `d = after - before`. A positive mean difference represents an increase. The same setup supports questions asking for the differences, their SD, a confidence interval, or a hypothesis-test decision.
+
+```{r}
+before <- c(65, 70, 68, 74, 73)
+after  <- c(69, 74, 69, 80, 78)
+d <- after - before
+mean(d)                      # Mean difference
+sd(d)                        # SD of differences
+n <- length(d)
+se <- sd(d)/sqrt(n)
+
+# Two-sided 95% confidence interval
+alpha <- 0.05
+t_star <- qt(1-alpha/2, df=n-1)
+mean(d) + c(-1, 1)*t_star*se
+
+# Example hypothesis: mean difference > 0 (an increase)
+t_stat <- mean(d)/se
+t_stat
+pt(t_stat, df=n-1, lower.tail=FALSE)
+
+# With paired raw data, R can also calculate the test directly:
+t.test(after, before, paired=TRUE, alternative="greater")
+```
+
+**Remember:** The normality assumption concerns the **paired differences**. For a change in either direction, use a two-tailed test; for a specified increase/decrease, select the tail using the sign of the *defined difference*.
+
+## 2. Two Independent Population Means
+
+When comparing the means of **two separate groups**, check whether the population standard deviations are known and whether equal variances are assumed. When the population variances are unknown but assumed equal, use a **pooled two-sample t test**. Keep the subtraction as Population 1 minus Population 2.
+
+### Formulas
+
+$$s_p^2=\frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2},\qquad SE=s_p\sqrt{\frac1{n_1}+\frac1{n_2}}$$
+
+$$t=\frac{(\bar x_1-\bar x_2)-\Delta_0}{SE},\qquad df=n_1+n_2-2$$
+
+When population standard deviations are **known**, use a two-sample $z$ procedure with $SE=\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}$ and `pnorm()`. When equal variances are **not** assumed, use Welch's $t$ procedure with $SE=\sqrt{s_1^2/n_1+s_2^2/n_2}$; with raw observations, `t.test(group1, group2, var.equal=FALSE)` computes the Welch test. The example here illustrates the pooled procedure.
+
+### Common Questions and How to Approach Them
+
+| If the problem asks... | What to do | R code |
+|-----------------------|-------------------------|-------------------------|
+| Are the samples independent? | Determine whether the observations come from two separate, unrelated groups. | No calculation needed |
+| What is the difference between sample means? | Subtract Population 2's mean from Population 1's mean. | `xbar1 - xbar2` |
+| Which procedure should be used? | Check whether population standard deviations are known and whether equal variances are assumed. | See lecture formulas |
+| What is the pooled variance? | Combine the sample variances using their degrees of freedom when equal variances are assumed. | `((n1-1)*s1^2+(n2-1)*s2^2)/(n1+n2-2)` |
+| What is the standard error? | Use the formula for the appropriate z or t procedure. | See lecture formulas |
+| What are the pooled degrees of freedom? | Add the sample sizes and subtract 2. | `n1+n2-2` |
+| What is the test statistic? | Subtract the hypothesized difference from the observed difference, then divide by the standard error. | `(xbar1-xbar2-D0)/SE` |
+| What is the critical value? | Use `qnorm()` for z or `qt()` for t. | `qt(1-alpha/2, df)` for a two-tailed t test |
+| What is the p-value? | Use `pnorm()` or `pt()` with the appropriate tail. | `2*pt(-abs(t_stat), df)` for a two-tailed t test |
+| What is the confidence interval? | Calculate the difference in means plus or minus the margin of error. | `(xbar1-xbar2)+c(-1,1)*qt(1-alpha/2,df)*SE` |
+| What is the conclusion? | Compare the p-value with alpha. | Reject H0 if `p_value <= alpha` |
+
+### Choosing the Correct Hypothesis
+
+| Wording of the question        | Alternative hypothesis | Test direction |
+|--------------------------------|------------------------|----------------|
+| Population 1 has a higher mean | $H_a:\mu_1>\mu_2$      | Right-tailed   |
+| Population 1 has a lower mean  | $H_a:\mu_1<\mu_2$      | Left-tailed    |
+| The population means differ    | $H_a:\mu_1\ne\mu_2$    | Two-tailed     |
+
+**Remember:** The order of subtraction matters. Keep Population 1 minus Population 2 consistent throughout the calculations. When equal population variances are assumed, use the pooled two-sample t procedure.
+
+### Example: Pooled Two-Sample t Test
+
+-   **Two independent delivery teams.** Team A has $n_1=18$, mean 42.5 minutes, SD 5.1; Team B has $n_2=15$, mean 45.0 minutes, SD 6.3. Assume equal population variances and test whether the means differ.
+
+```{r}
+n1 <- 18; xbar1 <- 42.5; s1 <- 5.1
+n2 <- 15; xbar2 <- 45.0; s2 <- 6.3
+sp2 <- ((n1-1)*s1^2 + (n2-1)*s2^2)/(n1+n2-2)
+se <- sqrt(sp2*(1/n1+1/n2))
+t_stat <- (xbar1-xbar2)/se
+t_stat
+2*pt(-abs(t_stat), df=n1+n2-2)  # Two-sided p-value
+```
+
+If raw observations are provided, `t.test(group1, group2, var.equal=TRUE)` implements the pooled t procedure. If the problem states unequal variances, use the Welch procedure from the lecture instead.
+
+## 3. Comparing Two Population Proportions
+
+Use for two independent groups when the outcome is a **count or percentage** (e.g., defective versus not defective). Set Population 1 and Population 2 in the order stated. A difference of 0.03 is **3 percentage points**.
+
+### Formulas
+
+$$\hat p_1=\frac{x_1}{n_1},\qquad\hat p_2=\frac{x_2}{n_2},\qquad\hat p=\frac{x_1+x_2}{n_1+n_2}$$
+
+For a test of $H_0:p_1=p_2$, **pool** the proportions:
+
+$$z=\frac{\hat p_1-\hat p_2}{\sqrt{\hat p(1-\hat p)(1/n_1+1/n_2)}}$$
+
+For a confidence interval, **do not pool**:
+
+$$ (\hat p_1-\hat p_2)\pm z_{1-\alpha/2}\sqrt{\frac{\hat p_1(1-\hat p_1)}{n_1}+\frac{\hat p_2(1-\hat p_2)}{n_2}}$$
+
+### Common Questions and How to Approach Them
+
+| If the problem asks... | What to do | R code |
+|---------------------|-------------------------|-------------------------|
+| What are the sample proportions? | Divide the number of successes by the sample size for each group. | `p1 <- x1/n1` and `p2 <- x2/n2` |
+| What is the difference between proportions? | Subtract Population 2 from Population 1. | `p1 - p2` |
+| What is the pooled proportion? | Combine the successes and sample sizes from both groups. | `(x1 + x2)/(n1 + n2)` |
+| What is the standard error for a hypothesis test? | Use the pooled proportion when testing equality. | `sqrt(p_pool*(1-p_pool)*(1/n1+1/n2))` |
+| What is the z test statistic? | Divide the observed difference by the pooled standard error. | `(p1-p2)/SE` |
+| What is the p-value? | Use `pnorm()` with the appropriate tail. | `pnorm(z_stat)` for a left-tailed test |
+| What is the confidence interval? | Use the separate, unpooled sample proportions to calculate the standard error. | See formula above |
+| What does the confidence interval indicate? | Determine whether zero is included in the interval. | No additional calculation needed |
+
+The unpooled confidence-interval formula is given above. In the example below, the same inputs can be used to calculate the pooled test statistic or the unpooled confidence interval.
+
+### Choosing the Alternative Hypothesis
+
+| Wording                               | Alternative hypothesis | Tail  |
+|---------------------------------------|------------------------|-------|
+| Population 1 has a larger proportion  | $H_a:p_1>p_2$          | Right |
+| Population 1 has a smaller proportion | $H_a:p_1<p_2$          | Left  |
+| The proportions differ                | $H_a:p_1\ne p_2$       | Two   |
+
+### Example: Proportion Test and Confidence Interval
+
+-   **Defective phones.** Plant A has 8 defective phones in 200; Plant B has 10 in 200. This template answers requests for sample proportions, pooled estimate, $z$, p-value, or a confidence interval.
+
+```{r}
+x1 <- 8; n1 <- 200
+x2 <- 10; n2 <- 200
+alpha <- 0.05
+p1 <- x1/n1; p2 <- x2/n2
+p1; p2
+
+# Hypothesis test: H_a: p1 < p2
+pooled <- (x1+x2)/(n1+n2)
+se_test <- sqrt(pooled*(1-pooled)*(1/n1+1/n2))
+z_stat <- (p1-p2)/se_test
+z_stat
+pnorm(z_stat)                   # Left-tailed p-value
+
+# Confidence interval: p1 - p2 (unpooled)
+se_ci <- sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
+(p1-p2) + c(-1,1)*qnorm(1-alpha/2)*se_ci
+```
+
+Check counts of successes and failures for both groups. The lecture's normal-approximation guideline is **at least 5 of each** in each group. A confidence interval that contains 0 is compatible with equal proportions at the corresponding two-sided significance level.
+
+## 4. Comparing Two Population Variances
+
+Use when comparing **variation, spread, or variances**, with independent samples from approximately normal populations. The numerator must correspond to Population 1.
+
+### Formulas
+
+$$F=\frac{s_1^2}{s_2^2},\qquad df_1=n_1-1,\quad df_2=n_2-1$$
+
+If the problem provides **standard deviations**, square them to obtain variances. For a confidence interval estimating $\sigma_1^2/\sigma_2^2$, define $R=s_1^2/s_2^2$:
+
+$$\left(\frac{R}{F_{1-\alpha/2;df_1,df_2}},\;\frac{R}{F_{\alpha/2;df_1,df_2}}\right)$$
+
+### Common Questions and How to Approach Them
+
+| If the problem asks... | What to do | R code |
+|------------------------|------------------------|------------------------|
+| What is the variance ratio? | Divide the variance of Population 1 by the variance of Population 2. | `F_stat <- var1/var2` |
+| What are the numerator degrees of freedom? | Subtract 1 from the sample size of Population 1. | `df1 <- n1 - 1` |
+| What are the denominator degrees of freedom? | Subtract 1 from the sample size of Population 2. | `df2 <- n2 - 1` |
+| What is the upper F critical value? | Find the F value with area $\alpha$ to its right. | `qf(1-alpha, df1, df2)` |
+| What is the lower F critical value? | Find the F value with area $\alpha$ to its left. | `qf(alpha, df1, df2)` |
+| What is the p-value? | Use `pf()` with the appropriate tail. | See table below |
+| What is the confidence interval for the variance ratio? | Divide the observed variance ratio by the appropriate F critical values. | See example below |
+| Is one population more variable? | Check the hypothesis-test result and the direction of the variance ratio. | Compare p-value with alpha |
+
+### Selecting the Correct Tail
+
+| Alternative hypothesis | Test direction | R code |
+|------------------------|------------------------|------------------------|
+| $H_a:\sigma_1^2<\sigma_2^2$ | Left-tailed | `pf(F_stat, df1, df2)` |
+| $H_a:\sigma_1^2>\sigma_2^2$ | Right-tailed | `pf(F_stat, df1, df2, lower.tail=FALSE)` |
+| $H_a:\sigma_1^2\ne\sigma_2^2$ | Two-tailed | `2*min(pf(F_stat, df1, df2), pf(F_stat, df1, df2, lower.tail=FALSE))` |
+
+For a confidence interval, use the ratio formula above with `qf()` for the two required F quantiles; the example below also shows the R calculation.
+
+### Example: Comparing Production Variances
+
+-   **Filling machine consistency.** Line A (Population 1) has sample variance 1.84 from 12 containers; Line B (Population 2) has sample variance 2.46 from 15 containers. Test whether Line A has **smaller variance** at $\alpha=.05$.
+
+```{r}
+v1 <- 1.84; v2 <- 2.46
+n1 <- 12; n2 <- 15
+alpha <- 0.05
+F_stat <- v1/v2
+F_stat                         # Round to four decimals if instructed
+df1 <- n1-1; df2 <- n2-1
+pf(F_stat, df1, df2)           # Left-tailed p-value
+
+# For a claim that variance 1 is larger, use:
+pf(F_stat, df1, df2, lower.tail=FALSE)
+
+# For a two-sided test of equal variances:
+min(1, 2*min(pf(F_stat, df1, df2),
+             pf(F_stat, df1, df2, lower.tail=FALSE)))
+
+# Example 95% CI for the variance ratio:
+alpha_ci <- 0.05
+c(lower=F_stat/qf(1-alpha_ci/2,df1,df2),
+  upper=F_stat/qf(alpha_ci/2,df1,df2))
+```
+
+**Interpretation:** Equality corresponds to a **variance ratio of 1**. For a two-sided confidence interval, including 1 means equal variances remain plausible. With raw independent observations, `var.test(group1, group2)` is another option.
+
+## 5. The F-Distribution and the F-Test: One-Way ANOVA
+
+Use one-way ANOVA to compare **three or more group means**. The null hypothesis is $H_0:\mu_1=\mu_2=\cdots=\mu_k$; the alternative states that at least one mean differs. The F statistic compares **variation among group means** with **variation within groups**.
+
+### Formulas
+
+$$SST=\sum_{j=1}^k n_j(\bar x_j-\bar x)^2,\qquad SSE=\sum_j\sum_i(x_{ij}-\bar x_j)^2$$
+
+$$TSS=SST+SSE,\qquad df_{\mathrm{treat}}=k-1,\qquad df_{\mathrm{error}}=N-k$$
+
+$$MST=\frac{SST}{k-1},\quad MSE=\frac{SSE}{N-k},\quad F=\frac{MST}{MSE}$$
+
+### One-way ANOVA Table
+
+Here, $k$ is the number of groups and $N$ is the total number of observations. This course uses $SST$ for **treatment sum of squares** and $TSS$ for **total sum of squares**.
+
+| Source of variation | SS | df | MS | F | p-value |
+|:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
+| Between groups (treatments) | $SST$ | $k-1$ | $MST=\dfrac{SST}{k-1}$ | $\dfrac{MST}{MSE}$ | `pf(F, k-1, N-k, lower.tail=FALSE)` |
+| Within groups (error) | $SSE$ | $N-k$ | $MSE=\dfrac{SSE}{N-k}$ |  |  |
+| Total | $TSS=SST+SSE$ | $N-1$ |  |  |  |
+
+Use $F_{\mathrm{critical}}=\texttt{qf(1-alpha, k-1, N-k)}$ if the problem asks for a critical value. In R, `summary(aov(...))` produces the columns `Df`, `Sum Sq`, `Mean Sq`, `F value`, and `Pr(>F)`.
+
+### Common Questions and How to Approach Them
+
+| If the problem asks... | What to do | R code |
+|------------------------|------------------------|------------------------|
+| What is the grand mean? | Calculate the average of all observations. | `mean(values)` |
+| What is the treatment sum of squares (SST)? | Calculate the variation among group means. | Use the SST formula |
+| What is the error sum of squares (SSE)? | Calculate the variation within groups. | Use the SSE formula |
+| What is the total sum of squares? | Add SST and SSE. | `SST + SSE` |
+| What are the treatment degrees of freedom? | Subtract 1 from the number of groups. | `k - 1` |
+| What are the error degrees of freedom? | Subtract the number of groups from the total sample size. | `N - k` |
+| What is MST? | Divide treatment SS by treatment df. | `SST/(k-1)` |
+| What is MSE? | Divide error SS by error df. | `SSE/(N-k)` |
+| What is the F statistic? | Divide MST by MSE. | `MST/MSE` |
+| What is the F critical value? | Use the treatment and error degrees of freedom. | `qf(1-alpha, k-1, N-k)` |
+| What is the p-value? | Find the area to the right of the observed F statistic. | `pf(F_stat, df1, df2, lower.tail=FALSE)` |
+| Are the group means significantly different? | Compare the p-value with alpha. | Reject H0 if `p_value <= alpha` |
+
+### Working Backward to Find Missing ANOVA Values
+
+Sometimes the ANOVA table provides information that must be used to calculate another value.
+
+| If you know...   | You can calculate... | Formula           |
+|------------------|----------------------|-------------------|
+| SS and df        | MS                   | $MS=SS/df$        |
+| MS and df        | SS                   | $SS=MS\times df$  |
+| F and MSE        | MST                  | $MST=F\times MSE$ |
+| MST and F        | MSE                  | $MSE=MST/F$       |
+| SST and SSE      | Total SS             | $TSS=SST+SSE$     |
+| Total SS and SST | SSE                  | $SSE=TSS-SST$     |
+| Total SS and SSE | SST                  | $SST=TSS-SSE$     |
+| N and k          | Error df             | $df_E=N-k$        |
+| Treatment df     | Number of groups     | $k=df_T+1$        |
+| Total df         | Sample size          | $N=df_{Total}+1$  |
+
+### Identifying the Correct Information
+
+For a one-way ANOVA, the F statistic compares variation among the group means with variation within the groups.
+
+$$
+F=\frac{MST}{MSE}
+$$
+
+-   **Treatment (Between Groups):** Variation associated with differences among group means.
+-   **Error (Within Groups):** Variation among observations within their respective groups.
+-   **Total:** Overall variation across all observations.
+
+A significant overall ANOVA indicates that at least one population mean differs. It does not identify which specific groups differ.
+
+When an ANOVA table already supplies the **p-value**, compare it directly with $\alpha$; you do not need to recalculate $F$. If it supplies only $F$ and the degrees of freedom, use `pf(F_stat, df_treatment, df_error, lower.tail=FALSE)`.
+
+### Example: Completing an ANOVA Table
+
+-   **Finish or interpret an ANOVA table.** Suppose the between-group sum of squares is 30, the within-group sum of squares is 60, there are $k=3$ groups, and $N=18$ observations.
+
+```{r}
+SST <- 30; SSE <- 60
+k <- 3; N <- 18
+MST <- SST/(k-1)
+MSE <- SSE/(N-k)
+F_stat <- MST/MSE
+F_stat
+pf(F_stat, df1=k-1, df2=N-k, lower.tail=FALSE)
+qf(0.95, df1=k-1, df2=N-k)  # Critical F at alpha=.05
+SST + SSE                     # Total SS
+```
+
+When the problem **already gives F and its p-value**, read those values directly and compare the p-value with $\alpha$; further calculations are unnecessary. If raw group measurements are supplied:
+
+```{r}
+# Example of data arranged by group
+group <- factor(rep(c("A","B","C"), each=4))
+value <- c(8,9,10,9, 11,12,10,13, 14,15,13,16)
+summary(aov(value ~ group))
+```
+
+A significant overall ANOVA establishes that **at least one population mean differs**. It does not identify the differing pair(s).
+
+## 6. Multiple Comparison Procedures
+
+After a significant overall ANOVA, pairwise comparisons can help identify **which means differ**. Pay attention to whether the question specifies **Fisher's LSD** or **Tukey's HSD**, as their thresholds differ.
+
+### Fisher's LSD
+
+**Fisher's LSD** for means $i$ and $j$:
+
+$$LSD=t_{1-\alpha/2,\,df_E}\sqrt{MSE\left(\frac1{n_i}+\frac1{n_j}\right)}$$
+
+A pair is significantly different when $|\bar x_i-\bar x_j|>LSD$. The corresponding pairwise confidence interval is $(\bar x_i-\bar x_j)\pm LSD$.
+
+### Tukey's HSD
+
+**Tukey's HSD** for equal group sizes $n$:
+
+$$HSD=q_{1-\alpha;k,df_E}\sqrt{\frac{MSE}{n}}$$
+
+For unequal group sizes, the Tukey-Kramer pairwise margin is $q_{1-\alpha;k,df_E}\sqrt{MSE(1/n_i+1/n_j)/2}$. The Tukey confidence interval is the observed pairwise difference $\pm$ this margin.
+
+### Common Questions and How to Approach Them
+
+| If the problem asks... | What to do | R code |
+|-----------------------|-------------------------|-------------------------|
+| Should pairwise comparisons be conducted? | Check whether the overall ANOVA is significant at the stated alpha. | Compare `p_value <= alpha` |
+| How many pairwise comparisons are possible? | Use the number of treatment groups. | `choose(k, 2)` |
+| What is the critical t value for Fisher LSD? | Use the error degrees of freedom from ANOVA. | `qt(1-alpha/2, df_error)` |
+| What is Fisher's LSD? | Multiply the critical t value by the standard error of the pairwise difference. | See formula above |
+| Which treatment pairs differ? | Compare the absolute mean difference with the LSD value. | `abs(mean1-mean2) > LSD` |
+| What is the Tukey studentized-range critical value? | Use the number of groups and error degrees of freedom. | `qtukey(1-alpha, k, df_error)` |
+| What is a Tukey confidence interval? | Calculate the mean difference plus or minus Tukey's margin. | See formula above |
+| Does the Tukey interval show a significant difference? | Determine whether the interval includes zero. | Compare interval endpoints with zero |
+
+### Example: Comparing Three Treatment Means
+
+-   **Compare three treatment means.** Suppose group means are 10, 15, 12, each group has 8 observations, $MSE=16$, and error degrees of freedom are 21.
+
+```{r}
+means <- c(A=10, B=15, C=12)
+n <- 8; MSE <- 16; df_error <- 21
+alpha <- 0.05; k <- length(means)
+
+# Fisher LSD: compare any pair's absolute mean difference to LSD.
+LSD <- qt(1-alpha/2, df_error)*sqrt(MSE*(1/n+1/n))
+LSD
+abs(means["A"] - means["B"]) > LSD
+
+# Tukey: critical value and CI for A minus B.
+q_star <- qtukey(1-alpha, nmeans=k, df=df_error)
+margin <- q_star*sqrt(MSE/n)
+(means["A"]-means["B"]) + c(-1,1)*margin
+```
+
+**Decision:** For a pairwise confidence interval, if 0 is outside the interval, that pair differs significantly at the specified level. When raw observations are available, fit `aov()` and use `TukeyHSD(model)` for Tukey comparisons.
+
+## 7. Two-Way ANOVA: Randomized Block Design
+
+Use when treatments are compared **within blocks** (e.g., the same drivers test each car). A block is included to account for differences among drivers, patients, locations, or similar units. The two questions are whether **treatment means differ** and whether **blocks explain substantial variation**.
+
+### Formulas
+
+For $k$ treatments and $b$ blocks, with **one observation per treatment-block cell**:
+
+$$df_{\mathrm{treat}}=k-1,\qquad df_{\mathrm{block}}=b-1,\qquad df_E=(k-1)(b-1)$$
+
+$$F_{\mathrm{treat}}=\frac{MS_{\mathrm{treat}}}{MSE},\qquad F_{\mathrm{block}}=\frac{MS_{\mathrm{block}}}{MSE}$$
+
+### Randomized Block ANOVA Table
+
+Here, $k$ is the number of treatments, $b$ is the number of blocks, and $N=kb$. Each F test compares its mean square with the same error mean square. The table uses $SS_{\mathrm{treat}}$, $SS_{\mathrm{block}}$, and $SSE$ for the three sources of variation.
+
+| Source of variation | SS | df | MS | F | p-value |
+|:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
+| Treatments | $SS_{\mathrm{treat}}$ | $k-1$ | $MS_{\mathrm{treat}}=\dfrac{SS_{\mathrm{treat}}}{k-1}$ | $\dfrac{MS_{\mathrm{treat}}}{MSE}$ | `pf(F_treat, k-1, (k-1)*(b-1), lower.tail=FALSE)` |
+| Blocks | $SS_{\mathrm{block}}$ | $b-1$ | $MS_{\mathrm{block}}=\dfrac{SS_{\mathrm{block}}}{b-1}$ | $\dfrac{MS_{\mathrm{block}}}{MSE}$ | `pf(F_block, b-1, (k-1)*(b-1), lower.tail=FALSE)` |
+| Error | $SSE$ | $(k-1)(b-1)$ | $MSE=\dfrac{SSE}{(k-1)(b-1)}$ |  |  |
+| Total | $SS_{\mathrm{treat}}+SS_{\mathrm{block}}+SSE$ | $kb-1$ |  |  |  |
+
+The **treatment** row answers whether treatment means differ. The **block** row tests whether block means differ. Questions about whether blocking reduced unexplained variation use the block test in the course exercises.
+
+### Common Questions and How to Approach Them
+
+| If the problem asks... | What to do | R code |
+|-----------------------|-------------------------|-------------------------|
+| What is the treatment factor? | Identify the conditions being compared. | No calculation needed |
+| What is the blocking factor? | Identify the variable used to group similar experimental units. | No calculation needed |
+| What is the treatment mean square? | Divide treatment SS by treatment df. | `SS_treatment/df_treatment` |
+| What is the block mean square? | Divide block SS by block df. | `SS_block/df_block` |
+| What is MSE? | Divide error SS by error df. | `SS_error/df_error` |
+| What is the treatment F statistic? | Divide treatment MS by MSE. | `MS_treatment/MSE` |
+| What is the block F statistic? | Divide block MS by MSE. | `MS_block/MSE` |
+| Do treatment means differ? | Calculate the treatment p-value. | `pf(F_treatment, df_treatment, df_error, lower.tail=FALSE)` |
+| Did blocking account for significant variation? | Calculate the block p-value. | `pf(F_block, df_block, df_error, lower.tail=FALSE)` |
+
+### Which ANOVA Row Should You Use?
+
+| Question | Use this row |
+|----------------------------------|-------------------------------------|
+| Do average product ratings differ among prototypes? | Treatment (Prototypes) |
+| Did individual reviewers account for significant variation? | Blocks (Reviewers) |
+| Do average yields differ among fertilizers? | Treatment (Fertilizers) |
+| Did field plots account for significant variation? | Blocks (Plots) |
+
+### Example: Testing Treatment and Block Effects
+
+Use the example values below to test the treatment and block effects separately.
+
+```{r}
+# Replace with values from the ANOVA table
+MS_treatment <- 29.4
+MS_block <- 18.6
+MSE <- 8.2
+
+df_treatment <- 2
+df_block <- 5
+df_error <- 10
+
+alpha <- 0.05
+
+# Test for differences among treatments
+F_treatment <- MS_treatment/MSE
+
+p_treatment <- pf(
+  F_treatment,
+  df_treatment,
+  df_error,
+  lower.tail = FALSE
+)
+
+# Test whether blocking accounted for significant variation
+F_block <- MS_block/MSE
+
+p_block <- pf(
+  F_block,
+  df_block,
+  df_error,
+  lower.tail = FALSE
+)
+
+F_treatment
+p_treatment
+
+F_block
+p_block
+```
+
+**Remember:** The treatment test and block test answer different questions. Each F statistic uses its own mean square divided by the same MSE.
+
+With raw data, use `aov(response ~ treatment + block, data = df)` after setting both predictors as factors. The **treatment** row tests differences among treatments; the **block** row tests the blocking factor. For a single observation per treatment-block cell, the usual additive analysis has no separately estimable interaction.
+
+## 8. Two-Way ANOVA: Factorial Design
+
+Use when the study considers **two factors of interest**, such as teaching method and study schedule, with repeated observations in their combinations. A factorial ANOVA tests **Factor A**, **Factor B**, and their **interaction**.
+
+An interaction asks whether the effect of one factor **depends on** the level of the other factor. Follow the lecture sequence: **examine the interaction first**, then consider the main effects in light of that result.
+
+### Formulas
+
+For $a$ levels of Factor A, $b$ levels of Factor B, and $r$ observations per cell in a balanced design:
+
+$$df_A=a-1,\qquad df_B=b-1,\qquad df_{A\times B}=(a-1)(b-1),\qquad df_E=ab(r-1)$$
+
+$$F_A=\frac{MS_A}{MSE},\quad F_B=\frac{MS_B}{MSE},\quad F_{A\times B}=\frac{MS_{A\times B}}{MSE}$$
+
+### Two-Way Factorial ANOVA Table
+
+Let $a$ and $b$ represent the numbers of levels of Factors A and B; let $r$ be the number of observations in each cell. Then $N=abr$. Each source uses **its own numerator df** and the same error df.
+
+| Source of variation | SS | df | MS | F | p-value |
+|:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
+| Factor A | $SS_A$ | $a-1$ | $MS_A=\dfrac{SS_A}{a-1}$ | $\dfrac{MS_A}{MSE}$ | `pf(F_A, a-1, ab*(r-1), lower.tail=FALSE)` |
+| Factor B | $SS_B$ | $b-1$ | $MS_B=\dfrac{SS_B}{b-1}$ | $\dfrac{MS_B}{MSE}$ | `pf(F_B, b-1, ab*(r-1), lower.tail=FALSE)` |
+| A × B (interaction) | $SS_{AB}$ | $(a-1)(b-1)$ | $MS_{AB}=\dfrac{SS_{AB}}{(a-1)(b-1)}$ | $\dfrac{MS_{AB}}{MSE}$ | `pf(F_AB, (a-1)*(b-1), ab*(r-1), lower.tail=FALSE)` |
+| Within (error) | $SSE$ | $ab(r-1)$ | $MSE=\dfrac{SSE}{ab(r-1)}$ |  |  |
+| Total | $SS_A+SS_B+SS_{AB}+SSE$ | $abr-1$ |  |  |  |
+
+: **Check the interaction row first.** A significant interaction means the relationship involving one factor changes across levels of the other factor; interpret main effects with that interaction in mind.
+
+**Completing Missing Values in an ANOVA Table.** When information is missing from an ANOVA table, use the relationships between the columns to calculate the unknown values.
+
+-   For a missing sum of squares (SS), subtract the known sources from the total SS. For a missing mean square (MS), divide the corresponding SS by its df. To find an F statistic, divide the relevant effect MS by MSE. You can also rearrange these relationships to work backward from values already supplied in the table.
+
+### Common Questions and How to Approach Them
+
+| If the problem asks... | What to do | R code |
+|----------------------|-------------------------|-------------------------|
+| What are the factors? | Identify the two categorical explanatory variables. | No calculation needed |
+| What is an interaction? | Determine whether the effect of one factor depends on the level of the other factor. | No calculation needed |
+| What is the interaction sum of squares? | Subtract the other sources of variation from total SS. | `SS_total-SS_A-SS_B-SS_error` |
+| What is the interaction MS? | Divide interaction SS by interaction df. | `SS_interaction/df_interaction` |
+| What is the interaction F statistic? | Divide interaction MS by MSE. | `MS_interaction/MSE` |
+| Is the interaction significant? | Calculate the interaction p-value. | `pf(F_interaction, df_interaction, df_error, lower.tail=FALSE)` |
+| What is the F statistic for Factor A? | Divide Factor A MS by MSE. | `MS_A/MSE` |
+| What is the F statistic for Factor B? | Divide Factor B MS by MSE. | `MS_B/MSE` |
+| Do the factor means differ? | Use the F test for the relevant factor. | `pf(F_stat, df_factor, df_error, lower.tail=FALSE)` |
+
+### Choosing the Correct ANOVA Row
+
+| Question | Source of Variation |
+|---------------------------------|---------------------------------------|
+| Do average test scores differ by teaching method? | Teaching method |
+| Do average test scores differ by study schedule? | Study schedule |
+| Does the effect of teaching method depend on study schedule? | Interaction |
+| Do average customer ratings differ by store? | Store |
+| Do average customer ratings differ by day of week? | Day of week |
+| Does the difference among stores depend on the day of week? | Interaction |
+
+### Order of Hypothesis Testing
+
+**Step 1. Test the interaction.**
+
+$$
+F_{AB}=\frac{MS_{AB}}{MSE}
+$$
+
+**Step 2. Examine the interaction p-value.**
+
+-   If the interaction is significant, examine how the effect of one factor changes across levels of the other factor.
+-   If the interaction is not significant, proceed with the main-effect tests according to the course procedure.
+
+**Step 3. Test Factor A and Factor B.**
+
+$$
+F_A=\frac{MS_A}{MSE}
+$$
+
+$$
+F_B=\frac{MS_B}{MSE}
+$$
+
+### Example: Testing Interaction and Main Effects
+
+Use the example values below to calculate and test the interaction and both main effects.
+
+```{r}
+# Replace with the ANOVA table information
+MS_A <- 14.2
+MS_B <- 9.8
+MS_interaction <- 3.4
+MSE <- 2.6
+
+df_A <- 2
+df_B <- 1
+df_interaction <- 2
+df_error <- 18
+
+alpha <- 0.05
+
+# Interaction
+F_interaction <- MS_interaction/MSE
+
+p_interaction <- pf(
+  F_interaction,
+  df_interaction,
+  df_error,
+  lower.tail = FALSE
+)
+
+# Factor A
+F_A <- MS_A/MSE
+
+p_A <- pf(
+  F_A,
+  df_A,
+  df_error,
+  lower.tail = FALSE
+)
+
+# Factor B
+F_B <- MS_B/MSE
+
+p_B <- pf(
+  F_B,
+  df_B,
+  df_error,
+  lower.tail = FALSE
+)
+
+data.frame(
+  Effect = c("Factor A", "Factor B", "Interaction"),
+  F = c(F_A, F_B, F_interaction),
+  p_value = c(p_A, p_B, p_interaction)
+)
+```
+
+**Remember:** Test the interaction first. When an interaction is significant, interpreting the main effects requires additional care because the effect of one factor varies across levels of the other factor.
+
+With raw observations, use `aov(response ~ factorA * factorB, data = df)` with categorical factors. The `*` fits both main effects and their interaction. When an ANOVA table is incomplete, use the relationships among sums of squares, mean squares, and degrees of freedom above to find the missing quantity.

@@ -22,84 +22,56 @@ execute:
 
 ### Using R
 
-| Task                         | R code    | Example                       |
-|------------------------------|-----------|-------------------------------|
-| Save a value                 | `<-`      | `n <- 10`                     |
-| Create a vector              | `c()`     | `x <- c(10, 20, 30)`          |
-| Create consecutive intergers | `:`       | `0:5`                         |
-| Sort values                  | `sort()`  | `sort(x)`                     |
-| Addition / Subtraction       | `+` `-`   | `10 + 5` → `15``10 - 5` → `5` |
-| Multiplication / Division    | `*` `/`   | `10 * 5` → `50``10 / 5` → `2` |
-| Exponent / power             | `^`       | `4^2` → `16`                  |
-| Square root                  | `sqrt()`  | `sqrt(25)` → `5`              |
-| Absolute value               | `abs()`   | `abs(-4)` → `4`               |
-| Grouping with Parentheses    | `()`      | `(10 + 5) / 3` → `5`          |
+| Task                         | R code   | Example                             |
+|------------------------------|----------|-------------------------------------|
+| Save a value                 | `<-`     | `n <- 10`                           |
+| Create a vector              | `c()`    | `x <- c(10, 20, 30)`                |
+| Create consecutive intergers | `:`      | `0:5`                               |
+| Sort values                  | `sort()` | `sort(x)`                           |
+| Addition / Subtraction       | `+` `-`  | `10 + 5` → ``` 15``10 - 5 ``` → `5` |
+| Multiplication / Division    | `*` `/`  | `10 * 5` → ``` 50``10 / 5 ``` → `2` |
+| Exponent / power             | `^`      | `4^2` → `16`                        |
+| Square root                  | `sqrt()` | `sqrt(25)` → `5`                    |
+| Absolute value               | `abs()`  | `abs(-4)` → `4`                     |
+| Grouping with Parentheses    | `()`     | `(10 + 5) / 3` → `5`                |
 
 R requires `*` for multiplication, e.g., write `n * p` for $np$.
 
 ### Basic Functions in R
 
-+--------------------+-------------------+------------------------------------------------+
-| Calculation        | R code            | Example                                        |
-+====================+===================+================================================+
-| Sum                | `sum()`           | `sum(c(2, 4, 6))` → `12`                       |
-+--------------------+-------------------+------------------------------------------------+
-| Mean               | `mean()`          | `mean(c(2, 4, 6))` → `4`                       |
-+--------------------+-------------------+------------------------------------------------+
-| Median             | `median()`        | `median(c(2, 4, 9))` → `4`                     |
-+--------------------+-------------------+------------------------------------------------+
-| Min / Max          | `min()` `max()`   | `min(c(2, 4, 6))` → `2``max(c(2, 4, 6))` → `6` |
-+--------------------+-------------------+------------------------------------------------+
-| Variance           | `var()`           | `var(c(2, 4, 6))`                              |
-+--------------------+-------------------+------------------------------------------------+
-| Standard deviation | `sd()`            | `sd(c(2, 4, 6))`                               |
-+--------------------+-------------------+------------------------------------------------+
-| Number of values   | `length()`        | `length(c(2, 4, 6))` → `3`                     |
-+--------------------+-------------------+------------------------------------------------+
-| Round a result     | `round_half_up()` | `round_half_up(3.141, 2)` → `3.14`             |
-+--------------------+-------------------+------------------------------------------------+
-| Fraction           | `fractions()`     | `fractions(0.5)` → `1/2`                       |
-+--------------------+-------------------+------------------------------------------------+
-| Factorial          | `factorial()`     | `factorial(5)`                                 |
-+--------------------+-------------------+------------------------------------------------+
-| Combinations       | `choose()`        | `choose(5, 2)`                                 |
-+--------------------+-------------------+------------------------------------------------+
-| Summary statistics | `summary()`       | `summary(x)summary(data)`                      |
-+--------------------+-------------------+------------------------------------------------+
+| Calculation | R code | Example |
+|----|----|----|
+| Sum | `sum()` | `sum(c(2, 4, 6))` → `12` |
+| Mean | `mean()` | `mean(c(2, 4, 6))` → `4` |
+| Median | `median()` | `median(c(2, 4, 9))` → `4` |
+| Min / Max | `min()` `max()` | `min(c(2, 4, 6))` → ``` 2``max(c(2, 4, 6)) ``` → `6` |
+| Variance | `var()` | `var(c(2, 4, 6))` |
+| Standard deviation | `sd()` | `sd(c(2, 4, 6))` |
+| Number of values | `length()` | `length(c(2, 4, 6))` → `3` |
+| Round a result | `round_half_up()` | `round_half_up(3.141, 2)` → `3.14` |
+| Fraction | `fractions()` | `fractions(0.5)` → `1/2` |
+| Factorial | `factorial()` | `factorial(5)` |
+| Combinations | `choose()` | `choose(5, 2)` |
+| Summary statistics | `summary()` | `summary(x)summary(data)` |
 
 ## Recognizing the problem
 
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| Clue in the problem                                                            | What to consider                                         |
-+================================================================================+==========================================================+
-| List all possible outcomes                                                     | Sample space                                             |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| Favorable outcomes out of equally likely outcomes                              | Basic probability                                        |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| A or B, or both                                                                | Union / addition rule                                    |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| A and B                                                                        | Intersection / multiplication rule                       |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| Given that B occurred                                                          | Conditional probability                                  |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| Events cannot occur together                                                   | Mutually exclusive events                                |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| One event does not change the other's probability                              | Independent events                                       |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| Selecting a group; order does not matter                                       | Combinations                                             |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| Without replacement from a finite population                                   | Dependent draws; hypergeometric for a count of successes |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| At least one                                                                   | Often easiest using the complement of zero               |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| Values with their probabilities                                                | Discrete random variable; weighted mean and variance     |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| All listed values are equally likely                                           | Discrete uniform                                         |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| Fixed number of independent trials, two outcomes, constant success probability | Binomial                                                 |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
-| Count of events in a time, space, or other interval at a constant average rate | Poisson                                                  |
-+--------------------------------------------------------------------------------+----------------------------------------------------------+
+| Clue in the problem | What to consider |
+|----|----|
+| List all possible outcomes | Sample space |
+| Favorable outcomes out of equally likely outcomes | Basic probability |
+| A or B, or both | Union / addition rule |
+| A and B | Intersection / multiplication rule |
+| Given that B occurred | Conditional probability |
+| Events cannot occur together | Mutually exclusive events |
+| One event does not change the other's probability | Independent events |
+| Selecting a group; order does not matter | Combinations |
+| Without replacement from a finite population | Dependent draws; hypergeometric for a count of successes |
+| At least one | Often easiest using the complement of zero |
+| Values with their probabilities | Discrete random variable; weighted mean and variance |
+| All listed values are equally likely | Discrete uniform |
+| Fixed number of independent trials, two outcomes, constant success probability | Binomial |
+| Count of events in a time, space, or other interval at a constant average rate | Poisson |
 
 ## Probability rules
 
@@ -364,7 +336,7 @@ $$
 
 where
 
--   $e \approx 2.71828$ \
+-   $e \approx 2.71828$\
     In R, we can use `exp(-lambda)`
 
 -   $\lambda$ (lambda; Greek) = mean number of occurrences for the specified interval
